@@ -1,0 +1,74 @@
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   16.1   Copyright 1985-2019 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+                                      College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+6-user Stata network perpetual license:
+       Serial number:  501606204656
+         Licensed to:  Miklos Koren
+                       Central European University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+
+. do clean_gdelt.do 
+
+. use "input/GDELT/gov2gov-events-by-month.dta", clear
+
+. 
+. gen year = real(substr(YearMonth, 1, 4))
+
+. 
+. collapse (sum) Mentions3 Events3 Mentions4 Events4 Mentions5 Events5 Mentions
+> 6 Events6, by(Actor1CountryCode Actor2CountryCode year)
+
+. 
+. gen iso3_od = cond(Actor1CountryCode <= Actor2CountryCode, Actor1CountryCode,
+>  Actor2CountryCode) + cond(Actor1CountryCode >= Actor2CountryCode, Actor1Coun
+> tryCode, Actor2CountryCode)
+
+. 
+. sum Mentions3 if Actor1CountryCode == "HUN" & Actor2CountryCode == "DEU" & ye
+> ar == 2018
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+   Mentions3 |          1          54           .         54         54
+
+. sum Mentions3 if Actor1CountryCode == "DEU" & Actor2CountryCode == "HUN" & ye
+> ar == 2018
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+   Mentions3 |          1          36           .         36         36
+
+. sum Mentions3 if iso3_od == "DEUHUN" & year == 2018
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+   Mentions3 |          2          45    12.72792         36         54
+
+. 
+. collapse (mean) Mentions3 Events3 Mentions4 Events4 Mentions5 Events5 Mention
+> s6 Events6, by(iso3_od year)
+
+. sum Mentions3 if iso3_od == "DEUHUN" & year == 2018
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+   Mentions3 |          1          45           .         45         45
+
+. 
+. save "temp/gdelt-clean.dta", replace
+(note: file temp/gdelt-clean.dta not found)
+file temp/gdelt-clean.dta saved
+
+. 
+end of do-file

@@ -1,0 +1,52 @@
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   16.1   Copyright 1985-2019 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+                                      College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+6-user Stata network perpetual license:
+       Serial number:  501606204656
+         Licensed to:  Miklos Koren
+                       Central European University
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+
+. do clean_geodist.do 
+
+. use "input/cepii-geodist/geodist.dta", clear
+
+. 
+. rename iso_o iso3_o
+
+. rename iso_d iso3_d
+
+. 
+. gen iso2_od = cond(iso2_o <= iso2_d, iso2_o, iso2_d) + cond(iso2_o >= iso2_d,
+>  iso2_o, iso2_d) 
+
+. gen iso3_od = cond(iso3_o <= iso3_d, iso3_o, iso3_d) + cond(iso3_o >= iso3_d,
+>  iso3_o, iso3_d) 
+
+. 
+. drop _*
+
+. duplicates drop iso2_o iso2_d, force
+
+Duplicates in terms of iso2_o iso2_d
+
+(0 observations are duplicates)
+
+. 
+. save "temp/geodist-clean.dta", replace
+(note: file temp/geodist-clean.dta not found)
+file temp/geodist-clean.dta saved
+
+. 
+end of do-file

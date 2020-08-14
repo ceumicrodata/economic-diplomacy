@@ -1,4 +1,33 @@
 {
-    "inputs": {}, 
-    "kind": "0f155205570d3a906c8534403479963f-ac667911-d6a5-42a6-a2ba-0f3d917a0823"
+    "freeze_name": "economic-diplomacy", 
+    "freeze_time": "20200814T104511081560+0200", 
+    "inputs": {
+        "GDELT": {
+            "content_id": "17aa03070e383ea335c792c207e8abb52daf6a75b51ffdef4b7473940910238b95fb68446fc3590c2b74f37371a7d4e8af8fc3a7f56a606a55fe2ba1eda9b647", 
+            "freeze_time": "20200416T201424181865+0200", 
+            "kind": "9b167a7dfb939738a2c62088c7222fb7-8519e68a-f745-447b-a71f-bcef0a734811"
+        }, 
+        "cepii-geodist": {
+            "content_id": "5e3843403be307afed050045e1d74198266ce950afe9c6bc6a0b73416eb87cbd9b39f571c0e768b083221a3a115e8b44a65b259025bdbc52c30211442f7c78cd", 
+            "freeze_time": "20200809T225808922620+0200", 
+            "kind": "934df1968c7325cdcbf2a2dcd2710668-54a0b269-a1e2-4f4b-8151-88d8ac3a46ba"
+        }, 
+        "qog": {
+            "content_id": "a4fd14034784600f01fd83faf3f2f619f0a4b740a4b1836abaac9b10bec5f60e7680b5fba9f912170dcbadc64adc9f978b4908d88d38379c4b386bcf091f5db1", 
+            "freeze_time": "20200810T195237147843+0200", 
+            "kind": "0ab79fa7a14bb426d161a890676897c5-24495b0c-a3b9-4348-b372-de4e62c4fbd2"
+        }, 
+        "respect-trade-similarity": {
+            "content_id": "44ac5f42b07ddb10b4b738b0992cf660277d08ac166fe04a4e3b066ab41a4134c66f4f1feed7976b93dd22749755045bfe0120b27aadad3acc5595a79adc737f", 
+            "freeze_time": "20200730T162439210085+0200", 
+            "kind": "950c0d9e7cd2e3e4f84635996614d235-b6985d2c-b527-48ca-a549-e3e425bd6254"
+        }, 
+        "trade_data_aggregated": {
+            "content_id": "338b3aa651a75a1d264d174188ff4d88a8df4f16fc0621426df9557ae8ceba1d3d8f2f10c1cec5b04d3f99d3a51c9de25a457a15ceac616e5b62c197d0ca2c9d", 
+            "freeze_time": "20200810T024402722594+0200", 
+            "kind": "e75315b28191856b2896c5c207583b30-4da373db-09a1-4003-94e1-9596663c16b5"
+        }
+    }, 
+    "kind": "25f7c90b4a98c55a2e9403e75389a627-1ca21531-68f4-4ca8-825d-cd7ed47f8a53", 
+    "meta_version": "aaa947a6-1f7a-11e6-ba3a-0021cc73492e"
 }
