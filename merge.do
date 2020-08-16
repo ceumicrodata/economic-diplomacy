@@ -40,4 +40,11 @@ merge m:1 iso3_d year using `political_d', nogen keep(1 3)
 
 count
 
+foreach var in intent_events visits_events intent_mentions visits_mentions {
+	gen `var'_exporter = cond(iso3_o == actor1, `var'1, `var'2)
+	drop `var'1 `var'2
+}
+
+gen dem_diff = abs(fh_ipolity2_o - fh_ipolity2_d)
+
 save "output/analysis-sample.dta", replace

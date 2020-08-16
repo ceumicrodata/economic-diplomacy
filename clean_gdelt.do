@@ -13,8 +13,18 @@ sum Mentions3 if iso3_od == "DEUHUN" & year == 2018
 *collapse (mean) Mentions3 Events3 Mentions4 Events4 Mentions5 Events5 Mentions6 Events6, by(iso3_od year)
 *sum Mentions3 if iso3_od == "DEUHUN" & year == 2018
 
+gen intent_events = Events3 //if !missing(Events3)
+egen visits_events = rowtotal(Events4 Events5 Events6) //if !missing(Events4,Events5,Events6)
+gen intent_mentions = Mentions3 //if !missing(Events3)
+egen visits_mentions = rowtotal(Mentions4 Mentions5 Mentions6) //if !missing(Events4,Events5,Events6)
+
 bys iso3_od year (Actor1CountryCode): gen order = _n
-drop Actor2CountryCode
-reshape wide Actor1CountryCode Mentions3 Events3 Mentions4 Events4 Mentions5 Events5 Mentions6 Events6, i(iso3_od year) j(order)
+drop Actor2CountryCode Events* Mentions*
+reshape wide Actor1CountryCode intent_events visits_events intent_mentions visits_mentions, i(iso3_od year) j(order)
+
+*browse if iso3_od == "DEUHUN"
+
+rename Actor1CountryCode1 actor1
+rename Actor1CountryCode2 actor2
 
 save "temp/gdelt-clean.dta", replace

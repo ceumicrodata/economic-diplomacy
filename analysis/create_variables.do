@@ -14,7 +14,3 @@ generate trade_similarity = exp(-1/theta * tci_)
 foreach X of var $index_vars {
 	egen `X'_year = group(`X' year)
 }
-
-* convert GDELT variables, add visits, diplomatic events and cooperation
-generate intent = (Events31) if !missing(Events31)
-generate visits = (Events41 + Events51 + Events61) if !missing(Events41,Events51,Events61)
