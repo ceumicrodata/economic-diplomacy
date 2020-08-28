@@ -1,41 +1,80 @@
 
   ___  ____  ____  ____  ____ (R)
  /__    /   ____/   /   ____/
-___/   /   /___/   /   /___/   16.1   Copyright 1985-2019 StataCorp LLC
+___/   /   /___/   /   /___/   16.0   Copyright 1985-2019 StataCorp LLC
   Statistics/Data Analysis            StataCorp
                                       4905 Lakeway Drive
-                                      College Station, Texas 77845 USA
+     MP - Parallel Edition            College Station, Texas 77845 USA
                                       800-STATA-PC        http://www.stata.com
                                       979-696-4600        stata@stata.com
                                       979-696-4601 (fax)
 
-6-user Stata network perpetual license:
-       Serial number:  501606204656
+Single-user 2-core Stata perpetual license:
+       Serial number:  501606204617
          Licensed to:  Miklos Koren
-                       Central European University
+                       CEU MicroData
 
 Notes:
       1.  Stata is running in batch mode.
       2.  Unicode is supported; see help unicode_advice.
+      3.  More than 2 billion observations are allowed; see help obs_advice.
+      4.  Maximum number of variables is set to 5000; see help set_maxvar.
 
 . do merge.do 
 
-. use "temp/trade-similarity-clean.dta", clear
+. * read EU groups of countries
+. import delimited "temp/eu-related-countries.csv", varnames(1) clear
+(3 vars, 56 obs)
+
+. tempfile eu
 
 . 
+. clonevar iso2_o = iso_3166_2
+
+. clonevar iso2_d = iso_3166_2
+
+. save `eu'
+file /var/folders/f4/7drmhl1d5kj3wp1r33jvx32m0000gn/T//St01646.000001 saved
+
+. 
+. use "temp/trade-similarity-clean.dta", clear
+
 . count
   119,952
+
+. 
+. * is the exporter an EU country?
+. merge m:1 iso2_o using `eu', nogen keep(match)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                           111,384  
+    -----------------------------------------
+
+. rename relation eu_relation_exporter
+
+. * is the importer an EU country?
+. merge m:1 iso2_d using `eu', nogen keep(match)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            22,984  
+    -----------------------------------------
+
+. rename relation eu_relation_importer
 
 . 
 . merge 1:1 iso2_o iso2_d year using "temp/aggregated-clean.dta", nogen
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                        18,637
-        from master                    18,158  
-        from using                        479  
+    not matched                        79,993
+        from master                       352  
+        from using                     79,641  
 
-    matched                           101,794  
+    matched                            22,632  
     -----------------------------------------
 
 . 
@@ -47,11 +86,11 @@ Notes:
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                        17,139
-        from master                    17,139  
+    not matched                         8,383
+        from master                     8,383  
         from using                          0  
 
-    matched                           103,292  
+    matched                            94,242  
     -----------------------------------------
 
 . 
@@ -60,11 +99,11 @@ Notes:
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       128,432
-        from master                   114,293  (_merge==1)
-        from using                     14,139  (_merge==2)
+    not matched                       110,650
+        from master                    96,499  (_merge==1)
+        from using                     14,151  (_merge==2)
 
-    matched                             6,138  (_merge==3)
+    matched                             6,126  (_merge==3)
     -----------------------------------------
 
 . 
@@ -73,63 +112,63 @@ Notes:
            |              _merge
       year | master on  using onl  matched ( |     Total
 -----------+---------------------------------+----------
-      2001 |     7,084          0          0 |     7,084 
-      2002 |     7,084          0          0 |     7,084 
-      2003 |     7,085          0          0 |     7,085 
-      2004 |     7,085          0          0 |     7,085 
-      2005 |     7,084          0          0 |     7,084 
-      2006 |     7,084          0          0 |     7,084 
-      2007 |     7,084          0          0 |     7,084 
-      2008 |     7,084          0          0 |     7,084 
-      2009 |     7,084          0          0 |     7,084 
-      2010 |     7,085          0          0 |     7,085 
-      2011 |     7,084          0          0 |     7,084 
-      2012 |     7,084          0          0 |     7,084 
-      2013 |     7,084          0          0 |     7,084 
-      2014 |     7,084          0          0 |     7,084 
-      2015 |     5,038      1,471      2,046 |     8,555 
-      2016 |     5,038      1,471      2,046 |     8,555 
-      2017 |     5,038      1,471      2,046 |     8,555 
+      2001 |     5,941          0          0 |     5,941 
+      2002 |     5,991          0          0 |     5,991 
+      2003 |     5,931          0          0 |     5,931 
+      2004 |     6,010          0          0 |     6,010 
+      2005 |     5,993          0          0 |     5,993 
+      2006 |     5,997          0          0 |     5,997 
+      2007 |     5,982          0          0 |     5,982 
+      2008 |     5,986          0          0 |     5,986 
+      2009 |     5,946          0          0 |     5,946 
+      2010 |     5,966          0          0 |     5,966 
+      2011 |     6,016          0          0 |     6,016 
+      2012 |     6,046          0          0 |     6,046 
+      2013 |     6,110          0          0 |     6,110 
+      2014 |     6,129          0          0 |     6,129 
+      2015 |     4,113      1,473      2,044 |     7,630 
+      2016 |     4,191      1,478      2,039 |     7,708 
+      2017 |     4,151      1,474      2,043 |     7,668 
       2018 |         0      3,242          0 |     3,242 
       2019 |         0      3,242          0 |     3,242 
       2020 |         0      3,242          0 |     3,242 
 -----------+---------------------------------+----------
-     Total |   114,293     14,139      6,138 |   134,570 
+     Total |    96,499     14,151      6,126 |   116,776 
 
 . tab year _merge if tci_ != .
 
            |        _merge
       year | master on  matched ( |     Total
 -----------+----------------------+----------
-      2001 |     5,403          0 |     5,403 
-      2002 |     5,454          0 |     5,454 
-      2003 |     5,457          0 |     5,457 
-      2004 |     5,562          0 |     5,562 
-      2005 |     5,614          0 |     5,614 
-      2006 |     5,671          0 |     5,671 
-      2007 |     5,671          0 |     5,671 
-      2008 |     5,674          0 |     5,674 
-      2009 |     5,668          0 |     5,668 
-      2010 |     5,692          0 |     5,692 
-      2011 |     5,738          0 |     5,738 
-      2012 |     5,781          0 |     5,781 
-      2013 |     5,875          0 |     5,875 
-      2014 |     5,905          0 |     5,905 
-      2015 |     3,915      2,034 |     5,949 
-      2016 |     3,988      2,030 |     6,018 
-      2017 |     3,958      2,033 |     5,991 
+      2001 |     1,277          0 |     1,277 
+      2002 |     1,277          0 |     1,277 
+      2003 |     1,284          0 |     1,284 
+      2004 |     1,288          0 |     1,288 
+      2005 |     1,304          0 |     1,304 
+      2006 |     1,307          0 |     1,307 
+      2007 |     1,338          0 |     1,338 
+      2008 |     1,343          0 |     1,343 
+      2009 |     1,343          0 |     1,343 
+      2010 |     1,345          0 |     1,345 
+      2011 |     1,343          0 |     1,343 
+      2012 |     1,349          0 |     1,349 
+      2013 |     1,344          0 |     1,344 
+      2014 |     1,347          0 |     1,347 
+      2015 |       533        816 |     1,349 
+      2016 |       531        816 |     1,347 
+      2017 |       532        816 |     1,348 
 -----------+----------------------+----------
-     Total |    91,026      6,097 |    97,123 
+     Total |    20,085      2,448 |    22,533 
 
 . 
 . keep if _merge == 3
-(128,432 observations deleted)
+(110,650 observations deleted)
 
 . drop _merge
 
 . 
 . count
-  6,138
+  6,126
 
 . 
 . preserve
@@ -149,9 +188,9 @@ Notes:
   9.         save `political_`type''
  10. }
 (Quality of Government Basic dataset 2020 - Time-Series)
-file /home/tmp/St30708.000002 saved
+file /var/folders/f4/7drmhl1d5kj3wp1r33jvx32m0000gn/T//St01646.000003 saved
 (Quality of Government Basic dataset 2020 - Time-Series)
-file /home/tmp/St30708.000003 saved
+file /var/folders/f4/7drmhl1d5kj3wp1r33jvx32m0000gn/T//St01646.000004 saved
 
 . restore
 
@@ -164,7 +203,7 @@ file /home/tmp/St30708.000003 saved
         from master                         3  
         from using                          0  
 
-    matched                             6,135  
+    matched                             6,123  
     -----------------------------------------
 
 . merge m:1 iso3_d year using `political_d', nogen keep(1 3)
@@ -197,16 +236,30 @@ file /home/tmp/St30708.000003 saved
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                           264
-        from master                       264  
+    not matched                           262
+        from master                       262  
         from using                          0  
 
-    matched                             5,874  
+    matched                             5,864  
     -----------------------------------------
 
 . 
 . count
-  6,138
+  6,126
+
+. 
+. foreach var in intent_events visits_events intent_mentions visits_mentions {
+  2.         gen `var'_exporter = cond(iso3_o == actor1, `var'1, `var'2)
+  3.         drop `var'1 `var'2
+  4. }
+(60 missing values generated)
+(60 missing values generated)
+(60 missing values generated)
+(60 missing values generated)
+
+. 
+. gen dem_diff = abs(fh_ipolity2_o - fh_ipolity2_d)
+(265 missing values generated)
 
 . 
 . save "output/analysis-sample.dta", replace

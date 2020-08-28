@@ -14,3 +14,6 @@ generate trade_similarity = exp(-1/theta * tci_)
 foreach X of var $index_vars {
 	egen `X'_year = group(`X' year)
 }
+
+* only use exporter with EU to destinations among neighborhood and other sample countries
+keep if eu_relation_exporter == "EU" & eu_relation_importer != "EU"  & !missing(eu_relation_importer)

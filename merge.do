@@ -1,6 +1,20 @@
-use "temp/trade-similarity-clean.dta", clear
+* read EU groups of countries
+import delimited "temp/eu-related-countries.csv", varnames(1) clear
+tempfile eu
 
+clonevar iso2_o = iso_3166_2
+clonevar iso2_d = iso_3166_2
+save `eu'
+
+use "temp/trade-similarity-clean.dta", clear
 count
+
+* is the exporter an EU country?
+merge m:1 iso2_o using `eu', nogen keep(match)
+rename relation eu_relation_exporter
+* is the importer an EU country?
+merge m:1 iso2_d using `eu', nogen keep(match)
+rename relation eu_relation_importer
 
 merge 1:1 iso2_o iso2_d year using "temp/aggregated-clean.dta", nogen
 
