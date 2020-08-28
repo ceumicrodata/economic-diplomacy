@@ -1,4 +1,4 @@
-objects = output/analysis-sample.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta
+objects = output/analysis-sample.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta temp/eu-related-countries.csv
 
 all: $(objects)
 
@@ -14,3 +14,5 @@ temp/aggregated-clean.dta: clean_aggregated.do input/trade_data_aggregated/trade
 	stata -b do $<
 temp/trade-similarity-clean.dta: clean_tsi.do input/respect-trade-similarity/TC_INDEX_EXP_.csv
 	stata -b do $<
+temp/eu-related-countries.csv: 
+	wget -O $@ https://raw.githubusercontent.com/ceumicrodata/gov2gov-cooperation/master/externals/eurostat/eu-related-countries.csv
