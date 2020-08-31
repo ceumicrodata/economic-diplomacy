@@ -2,7 +2,7 @@ objects = output/analysis-sample.dta temp/qog-clean.dta temp/gdelt-clean.dta tem
 
 all: $(objects)
 
-output/analysis-sample.dta: merge.do temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta
+output/analysis-sample.dta: merge.do temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta input/un/un.dta
 	stata -b do $<
 temp/qog-clean.dta: clean_qog.do input/qog/qog-basic.dta
 	stata -b do $<

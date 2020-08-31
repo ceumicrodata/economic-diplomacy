@@ -22,13 +22,17 @@ merge m:1 iso2_o iso2_d using "temp/geodist-clean.dta", keepusing(iso3_o iso3_d 
 iso3_od contig-distwces distwces area_o dis_int_o landlocked_o ///
 continent_o city_en_o area_d dis_int_d landlocked_d continent_d city_en_d) keep(1 3) nogen
 
-merge m:1 iso3_od year using "temp/gdelt-clean.dta", // keep(3) nogen
+*merge m:1 iso3_od year using "temp/gdelt-clean.dta", // keep(3) nogen
 
-tab year _merge
-tab year _merge if tci_ != .
+*tab year _merge
+*tab year _merge if tci_ != .
 
-keep if _merge == 3
-drop _merge
+*keep if _merge == 3
+*drop _merge
+
+gen iso3_od_dir = iso3_o + iso3_d
+drop if iso3_od_dir == ""
+merge 1:1 iso3_od_dir year using "temp/gdelt-clean.dta", nogen keep(3)
 
 count
 
@@ -52,12 +56,14 @@ restore
 merge m:1 iso3_o year using `political_o', nogen keep(1 3)
 merge m:1 iso3_d year using `political_d', nogen keep(1 3)
 
+merge m:1 iso3_od year using "input/un/un.dta", nogen keep(1 3)
+
 count
 
-foreach var in intent_events visits_events intent_mentions visits_mentions {
-	gen `var'_exporter = cond(iso3_o == actor1, `var'1, `var'2)
-	drop `var'1 `var'2
-}
+*foreach var in intent_events visits_events intent_mentions visits_mentions {
+*	gen `var'_exporter = cond(iso3_o == actor1, `var'1, `var'2)
+*	drop `var'1 `var'2
+*}
 
 gen dem_diff = abs(fh_ipolity2_o - fh_ipolity2_d)
 
