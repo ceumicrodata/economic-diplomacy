@@ -16,4 +16,4 @@ foreach X of var $index_vars {
 }
 
 * only use exporter with EU to destinations among neighborhood and other sample countries
-keep if eu_relation_exporter == "EU" & eu_relation_importer != "EU"  & !missing(eu_relation_importer)
+*keep if eu_relation_exporter == "EU" & eu_relation_importer != "EU"  & !missing(eu_relation_importer)
