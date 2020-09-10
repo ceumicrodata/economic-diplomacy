@@ -2,6 +2,7 @@
 import delimited "temp/eu-related-countries.csv", varnames(1) clear
 replace iso_3166_2 = "GR" if iso_3166_2 == "EL"
 replace iso_3166_2 = "GB" if iso_3166_2 == "UK"
+replace relation = "EU" if iso_3166_2 == "GB"
 tempfile eu
 
 clonevar iso2_o = iso_3166_2
