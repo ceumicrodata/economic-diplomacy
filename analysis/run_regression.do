@@ -13,28 +13,28 @@ reghdfe trade_similarity ln_distw ln_gdp*, a(`dummies') cluster($index_vars)
 *gravity model without trade_similarity without FE without political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
-		ppmlhdfe `var' ln_good_total ln_distw  $log_vars_single if $`sample', noabsorb cluster($index_vars)
+		ppmlhdfe `var' ln_good_total ln_distw ln_gdp* if $`sample', noabsorb cluster($index_vars)
 	}
 }
 
 *gravity model with trade_similarity without FE without political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
-		ppmlhdfe `var' trade_similarity ln_good_total ln_distw  $log_vars_single if $`sample', noabsorb cluster($index_vars)
+		ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_gdp* if $`sample', noabsorb cluster($index_vars)
 	}
 }
 
 *gravity model with trade_similarity with FE without political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
-		ppmlhdfe `var' trade_similarity ln_good_total ln_distw  $log_vars_single $dummy_vars if $`sample', a(`dummies') cluster($index_vars)
+		ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_gdp* $dummy_vars if $`sample', a(`dummies') cluster($index_vars)
 	}
 }
 
 *gravity model with trade_similarity with FE with political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
-		ppmlhdfe `var' trade_similarity ln_good_total ln_distw  $log_vars_single $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
+		ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
 	}
 }
 
@@ -43,14 +43,14 @@ egen iso3_od_num = group($index_vars)
 xtset iso3_od_num year
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
-		ppmlhdfe `var' trade_similarity l1.trade_similarity l2.trade_similarity ln_good_total ln_distw $log_vars_single $dummy_vars ln_agree ln_dem_diff if $eu_neighbor, a($index_vars) cluster($index_vars)
+		ppmlhdfe `var' trade_similarity l1.trade_similarity l2.trade_similarity ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a($index_vars) cluster($index_vars)
 	}
 }
 
 *regressions in different years (only eu_neighbor) (6)
 forval i = 2015(1)2017 {
 	foreach var of varlist $outcomes_events {
-		ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_dem_diff ln_agree $dummy_vars if $eu_neighbor & year == `i', a($index_vars) cluster($index_vars)
+		ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_gdp* $dummy_vars ln_dem_diff ln_agree if $eu_neighbor & year == `i', a($index_vars) cluster($index_vars)
 	}
 }
 
