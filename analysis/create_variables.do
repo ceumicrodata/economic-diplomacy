@@ -1,7 +1,7 @@
 
-keep year $log_vars $level_vars $dummy_vars $index_vars
+keep year $log_vars $log_vars_single $level_vars $dummy_vars $index_vars
 
-foreach X of var $log_vars {
+foreach X of var $log_vars $log_vars_single {
 	generate ln_`X' = ln(`X')
 }
 
