@@ -1,8 +1,10 @@
-objects = output/analysis-sample.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta temp/eu-related-countries.csv
+objects = output/analysis-sample.dta temp/gdp-clean.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta temp/eu-related-countries.csv
 
 all: $(objects)
 
-output/analysis-sample.dta: merge.do temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta input/un/un.dta
+output/analysis-sample.dta: merge.do temp/gdp-clean.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta input/un/un.dta
+	stata -b do $<
+temp/gdp-clean.dta: clean_gdp.do input/gdp/gdp.xls
 	stata -b do $<
 temp/qog-clean.dta: clean_qog.do input/qog/qog-basic.dta
 	stata -b do $<

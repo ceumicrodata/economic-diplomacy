@@ -63,6 +63,24 @@ merge m:1 iso3_od year using "input/un/un.dta", nogen keep(1 3)
 
 count
 
+preserve
+foreach type in o d {
+	use "temp/gdp-clean.dta", clear
+
+	rename Country_Code iso3_`type'
+	
+	rename gdp gdp_`type'
+
+	tempfile economic_`type'
+	save `economic_`type''
+}
+restore
+
+merge m:1 iso3_o year using `economic_o', nogen keep(1 3)
+merge m:1 iso3_d year using `economic_d', nogen keep(1 3)
+
+count
+
 *foreach var in intent_events visits_events intent_mentions visits_mentions {
 *	gen `var'_exporter = cond(iso3_o == actor1, `var'1, `var'2)
 *	drop `var'1 `var'2

@@ -12,6 +12,11 @@
             "freeze_time": "20200809T225808922620+0200", 
             "kind": "934df1968c7325cdcbf2a2dcd2710668-54a0b269-a1e2-4f4b-8151-88d8ac3a46ba"
         }, 
+        "gdp": {
+            "content_id": "95d155463e3a4ad1342475b7351bde6eeca5038e20006c84519faf17b7729fe367a9213fcaca71e3ca91ee784f92251239ca1c02972a3fa0934c86f74d3dc8a8", 
+            "freeze_time": "20200914T092021057695+0200", 
+            "kind": "ce7d36a03c037a1869529ac76ed3c022-f62dc22c-8cd7-494a-ac45-6d3534e38b46"
+        }, 
         "qog": {
             "content_id": "a4fd14034784600f01fd83faf3f2f619f0a4b740a4b1836abaac9b10bec5f60e7680b5fba9f912170dcbadc64adc9f978b4908d88d38379c4b386bcf091f5db1", 
             "freeze_time": "20200810T195237147843+0200", 
