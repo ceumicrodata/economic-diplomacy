@@ -17,6 +17,11 @@
             "freeze_time": "20200914T092021057695+0200", 
             "kind": "ce7d36a03c037a1869529ac76ed3c022-f62dc22c-8cd7-494a-ac45-6d3534e38b46"
         }, 
+        "public-opinion": {
+            "content_id": "5f8806671589c0f81c09ff38987d6d673370b20aa3d5f2b3d8ad58960d0d64fd5488abe23c23bc48616d62bd73f251f8540f442f706bab98750ff9a09275229f", 
+            "freeze_time": "20200915T102901874904+0200", 
+            "kind": "9cc7aca407679a677aec60957a014852-820fdbf5-dcd3-493e-9bc1-37489d073bcd"
+        }, 
         "qog": {
             "content_id": "a4fd14034784600f01fd83faf3f2f619f0a4b740a4b1836abaac9b10bec5f60e7680b5fba9f912170dcbadc64adc9f978b4908d88d38379c4b386bcf091f5db1", 
             "freeze_time": "20200810T195237147843+0200", 

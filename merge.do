@@ -59,6 +59,8 @@ restore
 merge m:1 iso3_o year using `political_o', nogen keep(1 3)
 merge m:1 iso3_d year using `political_d', nogen keep(1 3)
 
+gen dem_diff = abs(fh_ipolity2_o - fh_ipolity2_d)
+
 merge m:1 iso3_od year using "input/un/un.dta", nogen keep(1 3)
 
 count
@@ -86,6 +88,8 @@ count
 *	drop `var'1 `var'2
 *}
 
-gen dem_diff = abs(fh_ipolity2_o - fh_ipolity2_d)
+merge m:1 iso2_od using "temp/po-clean", nogen keep(1 3)
+
+count
 
 save "output/analysis-sample.dta", replace
