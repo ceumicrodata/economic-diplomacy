@@ -34,11 +34,9 @@ foreach sample in all eu_neighbor {
 *gravity model with trade_similarity with FE with political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
-		eststo: ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
+		ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
 	}
 }
-estout using "output/results.txt", keep(trade_similarity) cells(b se) replace
-eststo clear
 
 *using lagged trade_similarity (4)
 egen iso3_od_num = group($index_vars)

@@ -18,4 +18,4 @@ here
 use "${here}/output/analysis-sample.dta", clear
 do "${here}/analysis/create_variables.do"
 do "${here}/analysis/run_regression.do"
-
+do "${here}/analysis/run_regression_slides.do"
