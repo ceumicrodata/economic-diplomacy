@@ -1,7 +1,7 @@
-objects = output/analysis-sample.dta temp/po-clean.dta temp/gdp-clean.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta temp/eu-related-countries.csv
+all: output/results_po.tex
 
-all: $(objects)
-
+output/results_po.tex: analysis/master.do analysis/create_variables.do analysis/run_regression.do analysis/run_regression_slides.do output/analysis-sample.dta
+	stata -b do $<
 output/analysis-sample.dta: merge.do temp/po-clean.dta temp/gdp-clean.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/trade-similarity-clean.dta input/un/un.dta
 	stata -b do $<
 temp/po-clean.dta: clean_po.do input/public-opinion/ebs_491.xls
