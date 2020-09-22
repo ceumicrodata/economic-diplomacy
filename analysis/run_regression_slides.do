@@ -16,7 +16,7 @@ label variable ln_gdp_d "Importer nominal GDP (log)"
 
 estpost sum intent_events_exporter visits_events_exporter contig comlang_off colony comcol ln_good_total ln_distw ln_agree ln_po_diff ln_gdp_o ln_gdp_d
 est store descriptive
-esttab descriptive using "output/results_descriptives.tex", replace ///
+esttab descriptive using "${here}/output/results_descriptives.tex", replace ///
 	title(Descriptive statistics\label{tab1}) ///
 	cells("count(fmt(0)) mean(fmt(2)) sd(fmt(2))") label booktabs nonum collabels("Obs" "Mean" "SD") gaps noobs
 eststo clear
@@ -24,7 +24,7 @@ eststo clear
 *gravity model without FE, with trade_similarity, with FE, with political variables
 eststo: quietly reghdfe ln_good_total ln_distw ln_gdp*, noabsorb cluster($index_vars)
 
-esttab est1 using "output/results_gravity.tex", replace ///
+esttab est1 using "${here}/output/results_gravity.tex", replace ///
 	label booktabs b(3) p(3) eqlabels(none) collabels(none) width(0.8\linewidth) legend ///
 	drop(_cons) ///
 	star(* 0.10 ** 0.05 *** 0.01) ///
@@ -41,7 +41,7 @@ foreach var of varlist $outcomes_events {
 	eststo: quietly ppmlhdfe `var' ln_good_total ln_distw ln_gdp*, noabsorb cluster($index_vars)
 }
 
-esttab est1 est2 using "output/results_without_fe.tex", replace ///
+esttab est1 est2 using "${here}/output/results_without_fe.tex", replace ///
 	label booktabs b(3) p(3) eqlabels(none) collabels(none) width(0.8\linewidth) legend ///
 	drop(_cons) ///
 	star(* 0.10 ** 0.05 *** 0.01) ///
@@ -75,7 +75,7 @@ foreach sample in all eu_neighbor {
 	}
 }
 
-esttab est1 est2 using "output/results_all.tex", replace ///
+esttab est1 est2 using "${here}/output/results_all.tex", replace ///
 	label booktabs b(3) p(3) eqlabels(none) collabels(none) width(0.8\linewidth) legend ///
 	drop(_cons landlocked* ln_gdp*) ///
 	star(* 0.10 ** 0.05 *** 0.01) ///
@@ -85,7 +85,7 @@ esttab est1 est2 using "output/results_all.tex", replace ///
 	cells(b(fmt(3) star) se(fmt(3) par)) ///
 	stats(N r2_p, fmt(0 3) labels("Number of observations" "Pseudo \(R^{2}\)"))
 	
-esttab est3 est4 using "output/results_eu_neighbor.tex", replace ///
+esttab est3 est4 using "${here}/output/results_eu_neighbor.tex", replace ///
 	label booktabs b(3) p(3) eqlabels(none) collabels(none) width(0.8\linewidth) legend ///
 	drop(_cons landlocked* ln_gdp*) ///
 	star(* 0.10 ** 0.05 *** 0.01) ///
@@ -104,7 +104,7 @@ foreach var of varlist $outcomes_events {
 	eststo: quietly ppmlhdfe `var' ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff ln_po_diff, a(`dummies') cluster($index_vars)
 }
 
-esttab est1 est2 using "output/results_po.tex", replace ///
+esttab est1 est2 using "${here}/output/results_po.tex", replace ///
 	label booktabs b(3) p(3) eqlabels(none) collabels(none) width(0.8\linewidth) legend ///
 	drop(_cons landlocked* ln_gdp*) ///
 	star(* 0.10 ** 0.05 *** 0.01) ///
