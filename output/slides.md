@@ -35,3 +35,6 @@
 - For any pair of countries (EU--neighbour), compare their export product shares to the EU average.
 - Convert this index of divergence to a [0,1] index of Trade Similarity.
 
+== TSI added to the models ==
+{\footnotesize\input{results_eu_neighbor_tsi.tex}}
+

@@ -115,3 +115,32 @@ esttab est1 est2 using "${here}/output/results_po.tex", replace ///
 	stats(N r2_p, fmt(0 3) labels("Number of observations" "Pseudo \(R^{2}\)"))
 	
 eststo clear
+
+*gravity model with trade_similarity with FE with political variables (4)
+foreach sample in all eu_neighbor {
+	foreach var of varlist $outcomes_events {
+		eststo: quietly ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
+	}
+}
+
+esttab est1 est2 using "${here}/output/results_all_tsi.tex", replace ///
+	label booktabs b(3) p(3) eqlabels(none) collabels(none) width(0.8\linewidth) legend ///
+	drop(_cons landlocked* ln_gdp*) ///
+	star(* 0.10 ** 0.05 *** 0.01) ///
+	title(Determinants of intented and actual visits\label{tab4}) ///
+	nonumbers mtitles("Intent" "Visits") ///
+	addnote("Notes: Poisson pseudo-likelihood regression with fixed effects is used for estimation." "Standard errors: Clustered standard errors are in parantheses." "Sample: All countries.") ///
+	cells(b(fmt(3) star) se(fmt(3) par)) ///
+	stats(N r2_p, fmt(0 3) labels("Number of observations" "Pseudo \(R^{2}\)"))
+	
+esttab est3 est4 using "${here}/output/results_eu_neighbor_tsi.tex", replace ///
+	label booktabs b(3) p(3) eqlabels(none) collabels(none) width(0.8\linewidth) legend ///
+	drop(_cons landlocked* ln_gdp*) ///
+	star(* 0.10 ** 0.05 *** 0.01) ///
+	title(Determinants of intented and actual visits\label{tab5}) ///
+	nonumbers mtitles("Intent" "Visits") ///
+	addnote("Notes: Poisson pseudo-likelihood regression with fixed effects is used for estimation." "Standard errors: Clustered standard errors are in parantheses." "Sample: Only the dyadic relations of EU members states with neighboring countries.") ///
+	cells(b(fmt(3) star) se(fmt(3) par)) ///
+	stats(N r2_p, fmt(0 3) labels("Number of observations" "Pseudo \(R^{2}\)"))
+	
+eststo clear
