@@ -119,7 +119,7 @@ eststo clear
 *gravity model with trade_similarity with FE with political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
-		eststo: quietly ppmlhdfe `var' trade_similarity ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
+		eststo: quietly ppmlhdfe `var' trade_similarity_exp ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
 	}
 }
 
