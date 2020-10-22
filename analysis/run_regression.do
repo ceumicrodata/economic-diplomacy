@@ -14,6 +14,9 @@ reghdfe trade_similarity_exp ln_distw ln_gdp*, a(`dummies') cluster($index_vars)
 reghdfe ln_kldexp ln_distw ln_gdp*, noabsorb cluster($index_vars)
 reghdfe ln_kldexp ln_distw ln_gdp* if ln_kldexp > -5, noabsorb cluster($index_vars)
 
+*graph on ln_kldexp
+twoway (scatter ln_kldexp ln_good_total if year == 2015, mcolor(black) msymbol(circle)) (scatter ln_kldexp ln_good_total if year == 2016, mcolor(black) msymbol(square)) (scatter ln_kldexp ln_good_total if year == 2017, mcolor(black) msymbol(triangle)), legend(lab(1 "2015") lab(2 "2016") lab( 3 "2017")) graphregion(color(white))
+
 *gravity model without trade_similarity without FE without political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
