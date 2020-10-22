@@ -10,6 +10,10 @@ reghdfe ln_good_total trade_similarity_exp ln_distw ln_gdp*  $dummy_vars ln_dem_
 reghdfe trade_similarity_exp ln_distw ln_gdp*, noabsorb cluster($index_vars)
 reghdfe trade_similarity_exp ln_distw ln_gdp*, a(`dummies') cluster($index_vars)
 
+*gravity model of kld without FE
+reghdfe ln_kldexp ln_distw ln_gdp*, noabsorb cluster($index_vars)
+reghdfe ln_kldexp ln_distw ln_gdp* if ln_kldexp > -5, noabsorb cluster($index_vars)
+
 *gravity model without trade_similarity without FE without political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
