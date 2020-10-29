@@ -32,6 +32,11 @@
             "freeze_time": "20201016T100740449506+0200", 
             "kind": "950c0d9e7cd2e3e4f84635996614d235-b6985d2c-b527-48ca-a549-e3e425bd6254"
         }, 
+        "trade-bins": {
+            "content_id": "9872be61cfeab23d2df5c4a51d0d7cc197fd7e229dcba6ff20a39f9b544fcd74d5d44a00bd9401e738b195594ce014d49d2f02f6c9c30d28f74cc413f63b8904", 
+            "freeze_time": "20201029T161210616943+0100", 
+            "kind": "141041b23f034b118eb13feecc6f1f92-488fcbc2-691c-4d7a-b7e2-2b90fafa03fd"
+        }, 
         "trade_data_aggregated": {
             "content_id": "90ce6fe633decf62f8e06a7c826a7b95011a95ddab8d8c41e2e1973610d357a86e97214fa2f0de2e8c1dd0b0077d9dc3b6122936aeb7ada2dd72480ca27449b9", 
             "freeze_time": "20201029T144310263485+0100", 
