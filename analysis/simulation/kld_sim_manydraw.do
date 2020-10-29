@@ -29,7 +29,7 @@ summarize
 levelsof obs, local(levels) 
 	foreach l of local levels {
 		sum mean if obs == `l'
-		hist mean if obs == `l', title("Number of balls: `l'") graphregion(fcolor(white))
+		hist mean if obs == `l', title("Number of balls: `l'") graphregion(fcolor(white)) kdensity
 		graph export "analysis/simulation/kld_sim_manydraw_`l'.png", replace
 }
 
