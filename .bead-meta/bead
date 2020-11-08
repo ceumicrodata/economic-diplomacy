@@ -28,13 +28,18 @@
             "kind": "0ab79fa7a14bb426d161a890676897c5-24495b0c-a3b9-4348-b372-de4e62c4fbd2"
         }, 
         "respect-trade-similarity": {
-            "content_id": "44ac5f42b07ddb10b4b738b0992cf660277d08ac166fe04a4e3b066ab41a4134c66f4f1feed7976b93dd22749755045bfe0120b27aadad3acc5595a79adc737f", 
-            "freeze_time": "20200730T162439210085+0200", 
+            "content_id": "67e4b37981a07b049911e925844817fd3f16c20181db471cdf185987dbf0f880eaa2c9c56fd82fc27216631d6868058c351582f2f27a797cf52e91ae5f330e58", 
+            "freeze_time": "20201016T100740449506+0200", 
             "kind": "950c0d9e7cd2e3e4f84635996614d235-b6985d2c-b527-48ca-a549-e3e425bd6254"
         }, 
+        "trade-bins": {
+            "content_id": "9872be61cfeab23d2df5c4a51d0d7cc197fd7e229dcba6ff20a39f9b544fcd74d5d44a00bd9401e738b195594ce014d49d2f02f6c9c30d28f74cc413f63b8904", 
+            "freeze_time": "20201029T161210616943+0100", 
+            "kind": "141041b23f034b118eb13feecc6f1f92-488fcbc2-691c-4d7a-b7e2-2b90fafa03fd"
+        }, 
         "trade_data_aggregated": {
-            "content_id": "338b3aa651a75a1d264d174188ff4d88a8df4f16fc0621426df9557ae8ceba1d3d8f2f10c1cec5b04d3f99d3a51c9de25a457a15ceac616e5b62c197d0ca2c9d", 
-            "freeze_time": "20200810T024402722594+0200", 
+            "content_id": "90ce6fe633decf62f8e06a7c826a7b95011a95ddab8d8c41e2e1973610d357a86e97214fa2f0de2e8c1dd0b0077d9dc3b6122936aeb7ada2dd72480ca27449b9", 
+            "freeze_time": "20201029T144310263485+0100", 
             "kind": "e75315b28191856b2896c5c207583b30-4da373db-09a1-4003-94e1-9596663c16b5"
         }, 
         "un": {

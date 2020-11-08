@@ -9,7 +9,8 @@ clonevar iso2_o = iso_3166_2
 clonevar iso2_d = iso_3166_2
 save `eu'
 
-use "temp/trade-similarity-clean.dta", clear
+*use "temp/trade-similarity-clean.dta", clear
+use "temp/tsi-clean.dta", clear
 count
 
 * is the exporter an EU country?
