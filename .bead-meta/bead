@@ -42,6 +42,11 @@
             "freeze_time": "20201029T144310263485+0100", 
             "kind": "e75315b28191856b2896c5c207583b30-4da373db-09a1-4003-94e1-9596663c16b5"
         }, 
+        "trade_data_chapter": {
+            "content_id": "b7b4b0281d143f9494b90ba045a467316aa069382691166fbfa936ee7ad617736a331a6227f6d0c996a79bef676c15f43cfa55d59e30a3ffecbb3d9b7e0c71b6", 
+            "freeze_time": "20201109T142024647977+0100", 
+            "kind": "6c618ab8b7ca7a4725779225f5835e68-229d42c4-0966-4b82-b6c4-eaffca407b73"
+        }, 
         "un": {
             "content_id": "53fa380b9c16df9dd6946eed0760ad8f705407f78b882e44031616cc4bcd67780fa845ced3e7fc908252377ed76629f32d4d70de02658460e1b6db6410c06e2a", 
             "freeze_time": "20200828T134726623347+0200", 
