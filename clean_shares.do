@@ -13,4 +13,4 @@ sum if iso2_d == "RU" & year == 2017
 *rename value_share share_
 *reshape wide share_, i(chapter) j(country_year) string
 
-save "analysis/simulation/shares", replace
+save "temp/shares-clean", replace
