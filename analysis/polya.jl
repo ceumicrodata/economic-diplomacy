@@ -1,6 +1,18 @@
 module Polya
 using Distributions
-export estimate_dirichlet_multinomial
+export estimate_dirichlet_multinomial, simulate_ECDF
+export EmpiricalCDF, evaluate_CDF
+
+struct EmpiricalCDF
+    x::Vector{Real}
+    p::Vector{Float64}
+    EmpiricalCDF(x, p) = length(x) != length(p) ? error("x and p should have the same length") : new(x, p)
+end
+
+function evaluate_CDF(cdf::EmpiricalCDF, value::Real)
+    index = findlast(x -> x <= value, cdf.x)
+    return cdf.p[index]
+end
 
 function _iterate_dirichlet_multinomial_MLE(nki::Array{T,N}, cdf::DirichletMultinomial) where {T <: Integer,N}
     # first dimension is categories
@@ -41,5 +53,21 @@ function estimate_dirichlet_multinomial(X::Array{T,N};
     
     return cdf
 end
+
+function simulate_ECDF(cdf::DirichletMultinomial, f::Function; maxiter::Int = 100000, digits::Int = 5) :: EmpiricalCDF
+    counts = rand(cdf, maxiter)
+    p = cdf.α ./ sum(cdf.α)
+    shares = counts ./ sum(counts, dims=1)
+    y = round.(vec(f(shares, p)), digits=digits)
+    sort!(y)
+    support = unique(y)
+    CDF = zeros(length(support), 2)
+    for (i, x) in enumerate(support)
+        CDF[i, 1] = x
+        CDF[i, 2] = findfirst(a -> a >= x, y)
+    end
+    return EmpiricalCDF(CDF[:,1], CDF[:,2] ./ maximum(1 .+ CDF[:,2]))
+end
+
 
 end
