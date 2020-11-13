@@ -1,7 +1,6 @@
 module Polya
 using Distributions
 export estimate_dirichlet_multinomial, simulate_ECDF
-export EmpiricalCDF, evaluate_CDF
 
 function _iterate_dirichlet_multinomial_MLE(nki::Array{T,N}, cdf::DirichletMultinomial) where {T <: Integer,N}
     # first dimension is categories
