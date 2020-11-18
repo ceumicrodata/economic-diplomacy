@@ -1,6 +1,6 @@
 module Polya
 using Distributions
-export estimate_dirichlet_multinomial, simulate_ECDF
+export estimate_dirichlet_multinomial, simulate_ECDF, gmm
 
 function _iterate_dirichlet_multinomial_MLE(nki::Array{T,N}, cdf::DirichletMultinomial) where {T <: Integer,N}
     # first dimension is categories
@@ -27,10 +27,10 @@ function estimate_dirichlet_multinomial(X::Array{T,N};
         tol::Float64 = 1e-8, maxiter::Int = 1000) where {T <: Integer,N}
     K = size(X, 1)
     n = sum(X)
-    cdf = DirichletMultinomial(n, 2.0*ones(K))
+    
+    starting_value = 2.0 * K * sum(X, dims=2:N) ./ sum(X)
+    cdf = DirichletMultinomial(n, vec(starting_value))
 
-    distance = 1e+12
-        
     for iter in 1:maxiter
         new_cdf = _iterate_dirichlet_multinomial_MLE(X, cdf)
         distance = maximum(abs.(log.(cdf.α) .- log.(new_cdf.α)))
@@ -42,11 +42,9 @@ function estimate_dirichlet_multinomial(X::Array{T,N};
     return cdf
 end
 
-function simulate_ECDF(cdf::DirichletMultinomial, f::Function; maxiter::Int = 100000, digits::Int = 5) :: DiscreteNonParametric
-    counts = rand(cdf, maxiter)
-    p = cdf.α ./ sum(cdf.α)
-    shares = counts ./ sum(counts, dims=1)
-    y = round.(vec(f(shares, p)), digits=digits)
+function simulate_ECDF(cdf::T, f::Function; maxiter::Int = 100000, digits::Int = 5) :: DiscreteNonParametric where T <: MultivariateDistribution
+    x = rand(cdf, maxiter)
+    y = round.(vec(f(x)), digits=digits)
     sort!(y)
     support = unique(y)
     CDF = zeros(length(support), 2)
@@ -57,6 +55,47 @@ function simulate_ECDF(cdf::DirichletMultinomial, f::Function; maxiter::Int = 10
     pmf = diff(CDF[:,2], dims=1)
     pmf = [pmf; maxiter - last(CDF[:,2])]
     return DiscreteNonParametric(CDF[:,1], pmf ./ sum(pmf))
+end
+
+function gmm(::Type{DirichletMultinomial}, x::AbstractArray{T, N}) where {T<:Real, N}
+    ns = sum(x, dims=1)
+    K = size(x, 1)
+    weight = ns ./ sum(ns)
+    
+    # gmm from p7 of  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2945396/pdf/nihms205488.pdf
+    m = vec(sum(x, dims=2:N) ./ sum(x))
+    shares = x ./ ns
+    # but use sample-weighted average instead
+    rho = sum(sum(weight .* shares.^2, dims=2:N) ./ sum(weight .* shares, dims=2:N))
+    precision = (K - rho) / (rho - 1) 
+    
+    return DirichletMultinomial(maximum(ns), precision .* m)
+end
+
+function mle(::Type{<:DirichletMultinomial}, x::Matrix{T};
+                 tol::Float64 = 1e-8, maxiter::Int = 1000) where T <: Real
+    K, N = size(x)
+    ns = sum(x, dims=1)
+
+    # initialize with GMM estimate
+    α = Polya.gmm(DirichletMultinomial, x).α
+    @inbounds for iter in 1:maxiter
+        α_old = copy(α)
+        αsum = sum(α)
+        # use eq (3.5) of https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2945396/pdf/nihms205488.pdf
+        denom = zeros(Float64, N)
+        num = zeros(Float64, K, N)
+        @inbounds for i = 1:N
+            denom[i] = sum([1 / (αsum + k) for k=0:ns[i]-1])
+            for j in eachindex(α)
+                αj = α[j]
+                num[j, i] = sum([1 / (αj + k) for k=0:x[j,i]-1])
+            end
+        end
+        α = α .* sum(num, dims=2) ./ sum(denom)
+        maximum(abs, α_old - α) < tol && break
+    end
+    DirichletMultinomial(maximum(ns), vec(α))
 end
 
 
