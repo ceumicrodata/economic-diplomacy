@@ -43,6 +43,7 @@ function estimate_dirichlet_multinomial(X::Array{T,N};
 end
 
 function simulate_ECDF(cdf::T, f::Function; maxiter::Int = 100000, digits::Int = 5) :: DiscreteNonParametric where T <: MultivariateDistribution
+    
     x = rand(cdf, maxiter)
     y = round.(vec(f(x)), digits=digits)
     sort!(y)
@@ -57,19 +58,28 @@ function simulate_ECDF(cdf::T, f::Function; maxiter::Int = 100000, digits::Int =
     return DiscreteNonParametric(CDF[:,1], pmf ./ sum(pmf))
 end
 
+function simulate_mixture(prior::Dirichlet, ns::Vector{Int64}, f::Function; 
+        maxiter::Int = 1000000, digits::Int = 5) :: DiscreteNonParametric
+    K1 = Int64(floor(maxiter^0.5))
+    K2 = Int64(ceil(maxiter / K1))
+    
+    ps = rand(prior, K1)
+
+end
 function gmm(::Type{DirichletMultinomial}, x::AbstractArray{T, N}) where {T<:Real, N}
     ns = sum(x, dims=1)
+    shares = x ./ ns
+        
     K = size(x, 1)
     weight = ns ./ sum(ns)
     
     # gmm from p7 of  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2945396/pdf/nihms205488.pdf
     m = vec(sum(x, dims=2:N) ./ sum(x))
-    shares = x ./ ns
     # but use sample-weighted average instead
     rho = sum(sum(weight .* shares.^2, dims=2:N) ./ sum(weight .* shares, dims=2:N))
     precision = (K - rho) / (rho - 1) 
     
-    return DirichletMultinomial(maximum(ns), precision .* m)
+    return DirichletMultinomial(maximum(ns), 1 .+ precision .* m)
 end
 
 function mle(::Type{<:DirichletMultinomial}, x::Matrix{T};
