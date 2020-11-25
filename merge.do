@@ -93,4 +93,14 @@ merge m:1 iso2_od using "temp/po-clean", nogen keep(1 3)
 
 count
 
+preserve
+import delimited "temp/p-values.csv", clear
+tempfile p
+save `p'
+restore
+
+merge 1:1 iso2_o iso2_d year using `p', keep(1 3) nogen
+
+count
+
 save "output/analysis-sample.dta", replace
