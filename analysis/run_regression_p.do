@@ -38,9 +38,13 @@ foreach sample in all eu_neighbor {
 * gravity model with p with FE with political variables (4)
 foreach sample in all eu_neighbor {
 	foreach var of varlist $outcomes_events {
-		ppmlhdfe `var' p ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
+		eststo: ppmlhdfe `var' p ln_good_total ln_distw ln_gdp* $dummy_vars ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
 	}
 }
+
+coefplot (est1, label("All - intent")) (est2, label("All - visits")), keep(p) xline(0, lcolor(black)) levels(90)
+graph export "output/coefficients.png", replace
+eststo clear
 
 * using lagged p (4)
 egen iso3_od_num = group($index_vars)
