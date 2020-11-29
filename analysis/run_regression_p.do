@@ -6,6 +6,10 @@ reghdfe ln_good_total p ln_distw ln_gdp*, noabsorb cluster($index_vars)
 reghdfe ln_good_total p ln_distw ln_gdp* $dummy_vars, a(`dummies') cluster($index_vars)
 reghdfe ln_good_total p ln_distw ln_gdp*  $dummy_vars ln_dem_diff agree, a(`dummies') cluster($index_vars)
 
+* kldexp and p
+reghdfe p kldexp ln_gdp*, noabsorb cluster($index_vars)
+reghdfe p kldexp ln_gdp*, a(`dummies') cluster($index_vars)
+
 * gravity model on p
 reghdfe p ln_distw ln_gdp*, noabsorb cluster($index_vars)
 reghdfe p ln_distw ln_gdp*, a(`dummies') cluster($index_vars)
