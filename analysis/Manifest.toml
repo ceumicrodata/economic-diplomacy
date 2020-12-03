@@ -128,9 +128,9 @@ uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[Distributions]]
 deps = ["FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SparseArrays", "SpecialFunctions", "StaticArrays", "Statistics", "StatsBase", "StatsFuns"]
-path = "dev/Distributions"
+git-tree-sha1 = "3d85c955190e6133966df58d3088d88234b72d12"
 uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.24.4"
+version = "0.24.6"
 
 [[DoubleFloats]]
 deps = ["GenericSVD", "GenericSchur", "LinearAlgebra", "Polynomials", "Printf", "Quadmath", "Random", "Requires", "SpecialFunctions"]
