@@ -88,7 +88,8 @@ function mle(::Type{<:DirichletMultinomial}, x::Matrix{T};
     ns = sum(x, dims=1)
 
     # initialize with GMM estimate
-    α = Polya.gmm(DirichletMultinomial, x).α
+    # add one ball to each bin b/c GMM precision is undefined if share = 1.0
+    α = Polya.gmm(DirichletMultinomial, x .+ 1).α
     @inbounds for iter in 1:maxiter
         α_old = copy(α)
         αsum = sum(α)
