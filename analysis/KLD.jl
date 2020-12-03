@@ -57,11 +57,11 @@ function flip(A::Array) :: Array
 end
 
 years = unique(data.year)
-destinations = unique(data.iso2_d)
+destinations = unique(DataFrame(load("../temp/regression_countries.csv")).iso2_d)
 
 header = Array(data[:,1:3])
 input = Array(data[:,4:end])
-output = zeros(Float64, size(input, 1))
+output = ones(Float64, size(input, 1))
 
 Threads.@threads for d in destinations
     for t in years
