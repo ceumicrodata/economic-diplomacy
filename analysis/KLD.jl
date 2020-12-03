@@ -52,28 +52,29 @@ function get_destination_matrix(data; country::String, year::Int = 2017)
     return filter(row -> row.iso2_d == country && row.year == year, data)[:,4:end-1]
 end
 
-function flip(df::DataFrame) :: Array
-    return Array(Array(df)')
+function flip(A::Array) :: Array
+    return Array(A')
 end
 
 years = unique(data.year)
 destinations = unique(data.iso2_d)
-ps = copy(data[1:0,1:3])
-ps.p = zeros(Float64, size(ps, 1))
-for d in destinations
-    for t in years 
+
+header = Array(data[:,1:3])
+input = Array(data[:,4:end])
+output = zeros(Float64, size(input, 1))
+
+Threads.@threads for d in destinations
+    for t in years
         println(d, t)
-        subset = get_destination_matrix(data, country=d, year=t)
+
+        indexes = (header[:,2] .== d) .& (header[:,3] .== t)
+        subset = input[indexes, :]
         p = compute_p_values(flip(subset))
-        new_batch = filter(row -> row.iso2_d == d && row.year == t, data)[:,1:3]
-        new_batch[:,:p] = p
-        append!(ps, new_batch)
+        output[indexes] .= p
     end
 end
 
-
-ps
-
-save("../temp/p-values.csv", ps)
+df = DataFrame(iso2_o=header[:,1], iso2_d=header[:,2], year=header[:,3], p=output)
+save("../temp/p-values.csv", df)
 
 
