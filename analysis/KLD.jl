@@ -46,7 +46,6 @@ function compute_p_values(A)
     return p
 end
 
-data = DataFrame(load("../temp/shipment-clean.csv"))
 
 function get_destination_matrix(data; country::String, year::Int = 2017)
     return filter(row -> row.iso2_d == country && row.year == year, data)[:,4:end-1]
@@ -56,25 +55,30 @@ function flip(A::Array) :: Array
     return Array(A')
 end
 
-years = unique(data.year)
-destinations = unique(DataFrame(load("../temp/regression_countries.csv")).iso2_d)
+function main(input_file::String, output_file::String)
+    data = DataFrame(load(input_file))
+    years = unique(data.year)
+    destinations = unique(DataFrame(load("../temp/regression_countries.csv")).iso2_d)
 
-header = Array(data[:,1:3])
-input = Array(data[:,4:end])
-output = ones(Float64, size(input, 1))
+    header = Array(data[:,1:3])
+    input = Array(data[:,4:end])
+    output = ones(Float64, size(input, 1))
 
-Threads.@threads for d in destinations
-    for t in years
-        println(d, t)
+    Threads.@threads for d in destinations
+        for t in years
+            println(d, t)
 
-        indexes = (header[:,2] .== d) .& (header[:,3] .== t)
-        subset = input[indexes, :]
-        p = compute_p_values(flip(subset))
-        output[indexes] .= p
+            indexes = (header[:,2] .== d) .& (header[:,3] .== t)
+            subset = input[indexes, :]
+            p = compute_p_values(flip(subset))
+            output[indexes] .= p
+        end
     end
+
+    df = DataFrame(iso2_o=header[:,1], iso2_d=header[:,2], year=header[:,3], p=output)
+    save(output_file, df)
 end
 
-df = DataFrame(iso2_o=header[:,1], iso2_d=header[:,2], year=header[:,3], p=output)
-save("../temp/p-values.csv", df)
-
+# call from the command line: "julia KLD.jl ../temp/shipment-clean.csv ../temp/p-values.csv"
+main(ARGS[1], ARGS[2])
 
