@@ -16,15 +16,9 @@ rename relation eu_relation_exporter
 merge m:1 iso2_d using `eu', nogen keep(master match)
 rename relation eu_relation_importer
 
-*xtline p if iso2_o == "HU", i(iso2_d) t(year) xtitle("") ytitle("") byopts(title("Hungary")) graphregion(color(white))
+keep if iso2_o == "HU" & (eu_relation_importer == "ENP" | eu_relation_importer == "ENP-South")
+drop eu_relation_exporter eu_relation_importer
+reshape wide p, i(iso2_o year) j(iso2_d) string
 
-*forval i = 1(1)24 {
-*	global plot plot`i'opts(lcolor(white) lwidth(thin))
-*}
-
-*di "${plot}"
-	
-*xtline p if iso2_o == "HU", i(iso2_d) t(year) overlay xtitle("") ytitle("") title("Hungary") graphregion(color(white)) legend(off) plot`i'opts(lcolor(white) lwidth(thin))
-
-twoway (line p year if iso2_o == "HU" & (eu_relation_importer == "ENP" | eu_relation_importer == "ENP-South"), lcolor(black%10) xtitle("")), graphregion(color(white)) title(Hungary, color(black))
+twoway (line p?? year, lcolor(black%10) xtitle("")), graphregion(color(white)) title(Hungary, color(black)) legend(off)
 graph export "output/panel_p_hungary.png", replace
