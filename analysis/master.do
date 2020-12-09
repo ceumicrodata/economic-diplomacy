@@ -7,22 +7,24 @@ global index_vars iso3_o iso3_d
 global index_vars_iso2 iso2_o iso2_d
 
 global all !missing(iso3_o)
-global eu_neighbor eu_relation_exporter == "EU" & eu_relation_importer != "EU"  & !missing(eu_relation_importer)
-global eu_eu eu_relation_exporter == "EU" & eu_relation_importer == "EU"
+global neighbor eu_relation_exporter == "EU" & (eu_relation_importer == "ENP" | eu_relation_importer == "ENP-South" | eu_relation_importer == "EFTA" | eu_relation_importer == "candidate")
+global eu eu_relation_exporter == "EU" & eu_relation_importer == "EU"
+global other eu_relation_exporter == "EU" & (eu_relation_importer == "other" | eu_relation_importer == "")
 
 global outcomes intent*exporter visits*exporter
 global outcomes_events intent_events_exporter visits_events_exporter
+global outcomes_simple intent visits
 
 * find project root folder
 here
 
-use "${here}/output/analysis-sample.dta", clear
+*use "${here}/output/analysis-sample.dta", clear
 *do "${here}/analysis/inspect_p.do"
-
 use "${here}/output/analysis-sample.dta", clear
 do "${here}/analysis/create_variables.do"
 *do "${here}/analysis/graph_hungary.do"
 *do "${here}/analysis/run_regression.do"
 *do "${here}/analysis/run_regression_slides.do"
-*do "${here}/analysis/run_regression_p.do"
-do "${here}/analysis/run_regression_russia.do"
+do "${here}/analysis/run_regression_p.do"
+*do "${here}/analysis/run_regression_russia.do"
+*do "${here}/analysis/run_regression_examples.do"
