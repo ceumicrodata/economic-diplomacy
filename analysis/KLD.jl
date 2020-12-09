@@ -46,11 +46,6 @@ function compute_p_values(A)
     return p
 end
 
-
-function get_destination_matrix(data; country::String, year::Int = 2017)
-    return filter(row -> row.iso2_d == country && row.year == year, data)[:,4:end-1]
-end
-
 function flip(A::Array) :: Array
     return Array(A')
 end
