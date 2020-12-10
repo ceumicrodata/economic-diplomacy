@@ -24,9 +24,9 @@ count
 collapse (sum) shipments_total = shipments, by(iso2_o iso2_d year)
 
 count
-count if shipments_total > 1000
+count if shipments_total >= 1000
 
-gen shipments_large = (shipments_total > 1000)
+gen shipments_large = (shipments_total >= 1000)
 tab shipments_large
 
 save "temp/shipment-clean-aggregated.dta", replace
