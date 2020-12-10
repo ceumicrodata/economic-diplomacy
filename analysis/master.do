@@ -1,7 +1,7 @@
 * save variable lists  and different samples to be used in transormations and regressions
 global log_vars good_total distw dem_diff agree po_diff kld* // p
 global log_vars_single gdp_o gdp_d
-global level_vars intent* visits* kld* eu_relation_exporter eu_relation_importer p
+global level_vars intent* visits* kld* eu_relation_exporter eu_relation_importer p shipments_large
 global dummy_vars contig comlang_off colony comcol landlocked_o landlocked_d 
 global index_vars iso3_o iso3_d
 global index_vars_iso2 iso2_o iso2_d
@@ -18,9 +18,11 @@ global outcomes_simple intent visits
 * find project root folder
 here
 
+* p change over time checked
+do "${here}/analysis/graph_p.do"
+
 *use "${here}/output/analysis-sample.dta", clear
 *do "${here}/analysis/inspect_p.do"
-use
 
 use "${here}/output/analysis-sample.dta", clear
 do "${here}/analysis/create_variables.do"

@@ -95,4 +95,8 @@ merge m:1 iso2_od using "temp/po-clean", nogen keep(1 3)
 
 count
 
+merge 1:1 iso2_o iso2_d year using "temp/shipment-clean-aggregated.dta", keep(1 3) keepusing(shipments_large) nogen
+
+count
+
 save "output/analysis-sample.dta", replace
