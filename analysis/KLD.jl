@@ -22,14 +22,14 @@ function compute_p_values(A; debug=false)
     K, N = size(data)
 
     if debug
-        println(K, N)
-        println(A)
-        println(data)
+        println(size(A))
+        println(size(data))
+        println(non_empty_columns)
     end
 
     # if no data left, return p = 1.0 because we cannot reject the null
     # cannot estimate countries where all shipments go to the same bin
-    (K > 1 && N > 1)|| return ones(Float64, N), non_empty_columns
+    (K > 1 && N > 1) || return ones(Float64, N), non_empty_columns
 
     H0_params = Polya.mle(DirichletMultinomial, data, tol=1e-4)
     H0_shares = H0_params.α ./ sum(H0_params.α)
@@ -73,7 +73,7 @@ function main(input_file::String, output_file::String)
         # only use p values for countries with non-missing data, rest are 1.0
         long_p_vector[non_empty_columns] .= short_p_vector
         # round p-value to 4 digits
-        output[indexes] .= round.(short_p_vector*1e4) / 1e4
+        output[indexes] .= round.(long_p_vector*1e4) / 1e4
     end
 
     df = DataFrame(iso2_o=header[:,1], iso2_d=header[:,2], year=header[:,3], p=output)

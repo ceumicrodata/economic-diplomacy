@@ -1,4 +1,4 @@
-JULIA=JULIA_NUM_THREADS=4 julia --project=.
+include local_settings.mk
 all: output/results_po.tex
 
 temp/p-values-trade.csv: temp/shipment-clean.csv analysis/KLD.jl
