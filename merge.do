@@ -12,7 +12,7 @@ save `eu'
 * p is moved to be the base of the dataset
 import delimited "temp/p-values-trade.csv", clear 
 
-merge 1:1 iso2_o iso2_d year using "temp/kld-clean.dta", keep(master match)
+merge 1:1 iso2_o iso2_d year using "temp/kld-clean.dta", keep(master match) nogen
 count
 
 * is the exporter an EU country?
@@ -41,6 +41,8 @@ drop if iso3_od_dir == ""
 merge 1:1 iso3_od_dir year using "temp/gdelt-clean.dta", nogen keep(3)
 
 count
+
+merge m:1 iso3_d year using  "temp/gdelt-agency-clean.dta", keep(1 3) nogen
 
 preserve
 foreach type in o d {

@@ -73,3 +73,14 @@ bys actor_importer year: egen visits_events_eu = mean(visits_events_exporter) if
 drop iso3_od_dir_importer actor_exporter actor_importer order iso3_od eu
 
 save "temp/gdelt-clean.dta", replace
+
+keep if substr(iso3_od_dir,1,3) == "EUR"
+
+rename intent_events_exporter intent_events_agency
+rename visits_events_exporter visits_events_agency
+
+gen iso3_d = substr(iso3_od_dir,4,3)
+
+keep year intent_events_agency visits_events_agency iso3_d
+
+save "temp/gdelt-agency-clean.dta", replace
