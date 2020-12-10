@@ -9,8 +9,10 @@ clonevar iso2_o = iso_3166_2
 clonevar iso2_d = iso_3166_2
 save `eu'
 
-*use "temp/trade-similarity-clean.dta", clear
-use "temp/tsi-clean.dta", clear
+* p is moved to be the base of the dataset
+import delimited "temp/p-values-trade.csv", clear 
+
+merge 1:1 iso2_o iso2_d year using "temp/kld-clean.dta", keep(master match)
 count
 
 * is the exporter an EU country?
@@ -90,16 +92,6 @@ count
 *}
 
 merge m:1 iso2_od using "temp/po-clean", nogen keep(1 3)
-
-count
-
-preserve
-import delimited "temp/p-values-trade.csv", clear
-tempfile p
-save `p'
-restore
-
-merge 1:1 iso2_o iso2_d year using `p', keep(1 3) nogen
 
 count
 
