@@ -20,6 +20,8 @@ here
 
 *use "${here}/output/analysis-sample.dta", clear
 *do "${here}/analysis/inspect_p.do"
+use
+
 use "${here}/output/analysis-sample.dta", clear
 do "${here}/analysis/create_variables.do"
 *do "${here}/analysis/graph_hungary.do"
