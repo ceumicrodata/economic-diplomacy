@@ -94,7 +94,7 @@ merge m:1 iso2_od using "temp/po-clean", nogen keep(1 3)
 count
 
 preserve
-import delimited "temp/p-values.csv", clear
+import delimited "temp/p-values-trade.csv", clear
 tempfile p
 save `p'
 restore
