@@ -91,10 +91,26 @@ label variable ln_po_diff "Difference in public opinion (log)"
 label variable ln_gdp_o "Exporter nominal GDP (log)"
 label variable ln_gdp_d "Importer nominal GDP (log)"
 
+*foreach var in all_intent all_visits eu_intent eu_visits neighbor_intent neighbor_visits other_intent other_visits {
+*	local sample = substr("`var'", 1, strpos("`var'", "_") - 1) 
+*	local title = cond(substr("`var'", strpos("`var'", "_") + 1,.) == "intent", "intended", "actual") 
+*	esttab `var'_1 `var'_2 `var'_3 `var'_4 using "${here}/output/results_`var'.tex", replace ///
+*		label booktabs b(3) p(3) eqlabels(none) collabels("") width(1.0\hsize) compress legend ///
+*		drop(_cons) ///
+*		star(* 0.10 ** 0.05 *** 0.01) ///
+*		title(Model of `title' visits - `sample' countries\label{tab1}) ///
+*		nonumbers ///
+*		mlabel("\shortstack{Without FE \\ without political variables}" "\shortstack{Without FE \\ with political variables}" "\shortstack{With FE \\ without political variables}" "\shortstack{With FE \\ with political variables}") ///
+*		addnote("Notes: Poisson pseudo-likelihood regression is used for estimation." "Standard errors: Clustered standard errors are in parantheses." "Sample: `sample' countries.") ///
+*		cells(b(fmt(3) star) se(fmt(3) par)) ///
+*		stats(N r2_p, fmt(0 3) labels("Number of observations" "Pseudo \(R^{2}\)"))
+*}
+
+local append replace
 foreach var in all_intent all_visits eu_intent eu_visits neighbor_intent neighbor_visits other_intent other_visits {
 	local sample = substr("`var'", 1, strpos("`var'", "_") - 1) 
 	local title = cond(substr("`var'", strpos("`var'", "_") + 1,.) == "intent", "intended", "actual") 
-	esttab `var'_1 `var'_2 `var'_3 `var'_4 using "${here}/output/results_`var'.tex", replace ///
+	esttab `var'_1 `var'_2 `var'_3 `var'_4 using "${here}/output/results_append.tex", `append' ///
 		label booktabs b(3) p(3) eqlabels(none) collabels("") width(1.0\hsize) compress legend ///
 		drop(_cons) ///
 		star(* 0.10 ** 0.05 *** 0.01) ///
@@ -104,6 +120,7 @@ foreach var in all_intent all_visits eu_intent eu_visits neighbor_intent neighbo
 		addnote("Notes: Poisson pseudo-likelihood regression is used for estimation." "Standard errors: Clustered standard errors are in parantheses." "Sample: `sample' countries.") ///
 		cells(b(fmt(3) star) se(fmt(3) par)) ///
 		stats(N r2_p, fmt(0 3) labels("Number of observations" "Pseudo \(R^{2}\)"))
+		local append append
 }
 
 eststo clear
