@@ -12,18 +12,20 @@ reghdfe p kldexp ln_gdp*, a(`dummies') cluster($index_vars)
 
 * gravity model on p
 reghdfe p ln_distw ln_gdp*, noabsorb cluster($index_vars)
-reghdfe p ln_distw ln_gdp*, a(`dummies') cluster($index_vars)
-
-* gravity model without p without FE without political variables (4)
-*foreach sample in all eu_neighbor eu_eu eu_other {
-*	foreach var of varlist $outcomes_events {
-*		ppmlhdfe `var' ln_good_total ln_distw ln_gdp* if $`sample', noabsorb cluster($index_vars)
-*	}
-*}
+estimates store p_gravity_wotrade
+reghdfe p ln_distw ln_gdp* ln_good_total, noabsorb cluster($index_vars)
+estimates store p_gravity_wtrade
+*reghdfe p ln_distw ln_gdp*, a(`dummies') cluster($index_vars)
 
 * for the coefplots, otherwise should be *-d
 rename intent_events_exporter intent
 rename visits_events_exporter visits
+
+* gravity model without p without FE without political variables (4)
+foreach var of varlist $outcomes_simple {
+	ppmlhdfe `var' ln_distw ln_gdp* ln_good_total, noabsorb cluster($index_vars)
+	estimates store gravity_`var'
+}
 
 * gravity model with p without FE without political variables (8)
 foreach sample in all eu neighbor other {
@@ -102,6 +104,28 @@ label variable ln_agree "Agreement in UN (log)"
 label variable ln_po_diff "Difference in public opinion (log)"
 label variable ln_gdp_o "Exporter nominal GDP (log)"
 label variable ln_gdp_d "Importer nominal GDP (log)"
+
+esttab p_gravity_wotrade p_gravity_wtrade using "${here}/output/results_gravity_p.tex", replace ///
+	label booktabs b(3) p(3) eqlabels(none) collabels("") width(1.0\hsize) compress legend ///
+	drop(_cons) ///
+	star(* 0.10 ** 0.05 *** 0.01) ///
+	title(Gravity equation on the p-values\label{tab1}) ///
+	nonumbers ///
+	mlabel("\shortstack{Model 1 \\ without trade flow}" "\shortstack{Model 2 \\ with trade flow}") ///
+	addnote("Notes: Linear model is used for estimation." "Standard errors: Clustered standard errors are in parantheses." "Sample: all countries.") ///
+	cells(b(fmt(3) star) se(fmt(3) par)) ///
+	stats(N r2, fmt(0 3) labels("Number of observations" "R^{2}"))
+
+esttab gravity_intent gravity_visits using "${here}/output/results_gravity_dependent.tex", replace ///
+	label booktabs b(3) p(3) eqlabels(none) collabels("") width(1.0\hsize) compress legend ///
+	drop(_cons) ///
+	star(* 0.10 ** 0.05 *** 0.01) ///
+	title(Gravity equation on the dependent variables\label{tab2}) ///
+	nonumbers ///
+	mlabel("\shortstack{Model 1 \\ intent}" "\shortstack{Model 2 \\ visits}") ///
+	addnote("Notes: Poisson pseudo-likelihood regression is used for estimation." "Standard errors: Clustered standard errors are in parantheses." "Sample: all countries.") ///
+	cells(b(fmt(3) star) se(fmt(3) par)) ///
+	stats(N r2_p, fmt(0 3) labels("Number of observations" "Pseudo \(R^{2}\)"))
 
 *foreach var in all_intent all_visits eu_intent eu_visits neighbor_intent neighbor_visits other_intent other_visits {
 *	local sample = substr("`var'", 1, strpos("`var'", "_") - 1) 
