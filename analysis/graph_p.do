@@ -16,18 +16,21 @@ rename relation eu_relation_exporter
 merge m:1 iso2_d using `eu', nogen keep(master match)
 rename relation eu_relation_importer
 
+histogram p, fcolor(black) lcolor(black) ytitle("") xtitle("p-values") bin(100) graphregion(color(white))
+graph export "output/hist_p_all.png"
+
 bys iso2_o iso2_d: egen early_p = mean(p) if year >= 2001 & year <= 2009
 bys iso2_o iso2_d: egen late_p = mean(p) if year >= 2010 & year <= 2017
 
 collapse (firstnm) early_p late_p eu_relation_exporter eu_relation_importer, by(iso2_o iso2_d)
 
-gen iso2_od = iso2_o + "-" + iso2_d
+*gen iso2_od = iso2_o + "-" + iso2_d
 
-twoway (scatter late_p early_p, mcolor(black%10)) (lfit late_p early_p, color(black) lwidth(thick)), graphregion(color(white)) xtitle("early_p") ytitle("late_p") note("Dyadic country pairs." "All countries.") legend(off)
+twoway (scatter late_p early_p, mcolor(black%10)) (lfit late_p early_p, color(black) lwidth(thick)), graphregion(color(white)) xtitle("early_p") ytitle("late_p") note("Country pairs." "All countries.") legend(off)
 graph export "output/scatter_p_all.png", replace
 
-twoway (scatter late_p early_p, mcolor(black%10)) (lfit late_p early_p, color(black) lwidth(thick)) if (eu_relation_importer == "EU"), graphregion(color(white)) xtitle("early_p") ytitle("late_p") note("Dyadic country pairs." "EU importer countries.") legend(off)
+twoway (scatter late_p early_p, mcolor(black%10)) (lfit late_p early_p, color(black) lwidth(thick)) if (eu_relation_importer == "EU"), graphregion(color(white)) xtitle("early_p") ytitle("late_p") note("Country pairs." "EU importer countries.") legend(off)
 graph export "output/scatter_p_eu.png", replace
 
-twoway (scatter late_p early_p, mcolor(black%10)) (lfit late_p early_p, color(black) lwidth(thick)) if (eu_relation_importer == "ENP" | eu_relation_importer == "ENP-South" | eu_relation_importer == "EFTA" | eu_relation_importer == "candidate"), graphregion(color(white)) xtitle("early_p") ytitle("late_p") note("Dyadic country pairs." "Neighbor importer countries.") legend(off)
+twoway (scatter late_p early_p, mcolor(black%10)) (lfit late_p early_p, color(black) lwidth(thick)) if (eu_relation_importer == "ENP" | eu_relation_importer == "ENP-South" | eu_relation_importer == "EFTA" | eu_relation_importer == "candidate"), graphregion(color(white)) xtitle("early_p") ytitle("late_p") note("Country pairs." "Neighbor importer countries.") legend(off)
 graph export "output/scatter_p_neighbor.png", replace
