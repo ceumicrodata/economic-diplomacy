@@ -17,7 +17,7 @@ merge m:1 iso2_d using `eu', nogen keep(master match)
 rename relation eu_relation_importer
 
 histogram p, fcolor(black) lcolor(black) ytitle("") xtitle("p-values") bin(100) graphregion(color(white))
-graph export "output/hist_p_all.png"
+graph export "output/hist_p_all.png", replace
 
 bys iso2_o iso2_d: egen early_p = mean(p) if year >= 2001 & year <= 2009
 bys iso2_o iso2_d: egen late_p = mean(p) if year >= 2010 & year <= 2017
