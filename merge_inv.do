@@ -10,7 +10,15 @@ clonevar iso2_d = iso_3166_2
 save `eu'
 
 * p is moved to be the base of the dataset
-import delimited "temp/p-values-trade.csv", clear 
+*import delimited "temp/p-values-trade.csv", clear
+import delimited "data/external/p-values-FDI_from_EU_200318_wide_split.csv", clear
+rename p p_inv
+rename iso2_o iso3_o
+rename iso2_d iso3_d
+
+merge m:1 iso3_o iso3_d using "temp/geodist-clean.dta", keepusing(iso2_o iso2_d ///
+iso3_od contig-distwces distwces area_o dis_int_o landlocked_o ///
+continent_o city_en_o area_d dis_int_d landlocked_d continent_d city_en_d) keep(3) nogen
 
 merge 1:1 iso2_o iso2_d year using "temp/kld-clean.dta", keep(master match) nogen
 count
@@ -23,10 +31,6 @@ merge m:1 iso2_d using `eu', nogen keep(master match)
 rename relation eu_relation_importer
 
 merge 1:1 iso2_o iso2_d year using "temp/aggregated-clean.dta", nogen
-
-merge m:1 iso2_o iso2_d using "temp/geodist-clean.dta", keepusing(iso3_o iso3_d ///
-iso3_od contig-distwces distwces area_o dis_int_o landlocked_o ///
-continent_o city_en_o area_d dis_int_d landlocked_d continent_d city_en_d) keep(1 3) nogen
 
 *merge m:1 iso3_od year using "temp/gdelt-clean.dta", // keep(3) nogen
 
@@ -113,4 +117,4 @@ count
 *merge 1:1 iso3_o iso3_d year using `p_inv', keep(1 3) nogen
 *count
 
-save "output/analysis-sample.dta", replace
+save "output/analysis-sample_inv.dta", replace
