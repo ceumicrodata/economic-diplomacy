@@ -3,7 +3,7 @@ all: output/results_po.tex
 
 temp/p-values-trade.csv: temp/shipment-clean.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
-temp/p-values-investment.csv: data/external/FDI_from_EU_200318_wide.csv analysis/KLD.jl
+data/external/p-values-%.csv: data/external/%.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
 output/results_po.tex: analysis/master.do analysis/create_variables.do analysis/run_regression.do analysis/run_regression_slides.do output/analysis-sample.dta
 	stata -b do $<
