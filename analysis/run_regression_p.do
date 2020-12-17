@@ -70,6 +70,38 @@ foreach sample in all eu neighbor other {
 	}
 }
 
+* gravity model with polya without FE without political variables (8)
+foreach sample in all eu neighbor other {
+	foreach var of varlist $outcomes_simple {
+		ppmlhdfe `var' polya_dummy ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency if $`sample', noabsorb cluster($index_vars)
+		estimates store `sample'_`var'_1_polya
+	}
+}
+
+* gravity model with polya without FE with political variables (8)
+foreach sample in all eu neighbor other {
+		foreach var of varlist $outcomes_simple {
+			ppmlhdfe `var' polya_dummy ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree ln_dem_diff if $`sample', noabsorb cluster($index_vars)
+			estimates store `sample'_`var'_2_polya
+	}
+}
+
+* gravity model with polya with FE without political variables (8)
+foreach sample in all eu neighbor other {
+		foreach var of varlist $outcomes_simple {
+			ppmlhdfe `var' polya_dummy ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency if $`sample', a(`dummies') cluster($index_vars)
+			estimates store `sample'_`var'_3_polya
+	}
+}
+
+* gravity model with polya with FE with political variables (8)
+foreach sample in all eu neighbor other {
+		foreach var of varlist $outcomes_simple {
+			ppmlhdfe `var' polya_dummy ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
+			estimates store `sample'_`var'_4_polya
+	}
+}
+
 *coefplot (est1, label("All - intent")) (est2, label("All - visits")), keep(p) xline(0, lcolor(black)) levels(90)
 ssc install grstyle
 ssc install palettes
@@ -85,6 +117,12 @@ graph export "output/coefficients_intent.png", replace
 
 coefplot all_visits_1 all_visits_2 all_visits_3 all_visits_4, bylabel("All countries") || eu_visits_1 eu_visits_2 eu_visits_3 eu_visits_4, bylabel("EU countries") || neighbor_visits_1 neighbor_visits_2 neighbor_visits_3 neighbor_visits_4, bylabel("Neighboorhood countries") || other_visits_1 other_visits_2 other_visits_3 other_visits_4, bylabel("Other countries") ||, keep(p) xline(0, lcolor(black)) subtitle(, lcolor(white) fcolor(white)) levels(90) graphregion(col(white ))bgcol(white) plotlabels("Without FE" "Without FE with political" "With FE without political" "With FE with political") // byopts(note("Coefficients of variable p on intent and visits. Points represent point estimates, lines represent 90% confidence intervals." "Samples named in the title." "Different colors represent different model specifications.", size(vsmall)))
 graph export "output/coefficients_visits.png", replace
+
+coefplot all_intent_1_polya all_intent_2_polya all_intent_3_polya all_intent_4_polya, bylabel("All countries") || eu_intent_1_polya eu_intent_2_polya eu_intent_3_polya eu_intent_4_polya, bylabel("EU countries") || neighbor_intent_1_polya neighbor_intent_2_polya neighbor_intent_3_polya neighbor_intent_4_polya, bylabel("Neighboorhood countries") || other_intent_1_polya other_intent_2_polya other_intent_3_polya other_intent_4_polya, bylabel("Other countries") ||, keep(polya_dummy) xline(0, lcolor(black)) subtitle(, lcolor(white) fcolor(white)) levels(90) graphregion(col(white))bgcol(white) plotlabels("Without FE" "Without FE with political" "With FE without political" "With FE with political") // byopts(note("Coefficients of variable p on intent and visits. Points represent point estimates, lines represent 90% confidence intervals." "Samples named in the title." "Different colors represent different model specifications.", size(vsmall)))
+graph export "output/coefficients_intent_polya.png", replace
+
+coefplot all_visits_1_polya all_visits_2_polya all_visits_3_polya all_visits_4_polya, bylabel("All countries") || eu_visits_1_polya eu_visits_2_polya eu_visits_3_polya eu_visits_4_polya, bylabel("EU countries") || neighbor_visits_1_polya neighbor_visits_2_polya neighbor_visits_3_polya neighbor_visits_4_polya, bylabel("Neighboorhood countries") || other_visits_1_polya other_visits_2_polya other_visits_3_polya other_visits_4_polya, bylabel("Other countries") ||, keep(polya_dummy) xline(0, lcolor(black)) subtitle(, lcolor(white) fcolor(white)) levels(90) graphregion(col(white))bgcol(white) plotlabels("Without FE" "Without FE with political" "With FE without political" "With FE with political") // byopts(note("Coefficients of variable p on intent and visits. Points represent point estimates, lines represent 90% confidence intervals." "Samples named in the title." "Different colors represent different model specifications.", size(vsmall)))
+graph export "output/coefficients_visits_polya.png", replace
 
 coefplot all_intent_5 all_visits_5, keep(p) xline(0, lcolor(black)) levels(90) bgcol(white) plotlabels("Intent" "Visits") title("All countries", color(black)) note("Coefficients of variable p on intent and visits. Points represent point estimates, lines represent 90% confidence intervals." "Only dyads with at least 1000 shipments in a given year.", size(vsmall))
 graph export "output/coefficients_large.png", replace

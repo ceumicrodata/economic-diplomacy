@@ -10,7 +10,8 @@ clonevar iso2_d = iso_3166_2
 save `eu'
 
 * p is moved to be the base of the dataset
-import delimited "temp/p-values-trade.csv", clear 
+import delimited "temp/p-values-trade.csv", clear
+generate polya_dummy = (p > 0.5) & !missing(p)
 
 merge 1:1 iso2_o iso2_d year using "temp/kld-clean.dta", keep(master match) nogen
 count
