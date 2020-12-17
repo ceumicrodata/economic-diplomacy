@@ -28,7 +28,15 @@ rename Actor1CountryCode actor
 *reshape wide actor intent_events visits_events intent_mentions visits_mentions, i(iso3_od_dir year) j(country)
 
 bys iso3_od year (actor): gen order = _n
+
+sum intent_mentions if actor == "HUN" & iso3_od == "DEUHUN" & year == 2018
+sum intent_mentions if actor == "DEU" & iso3_od == "DEUHUN" & year == 2018
+sum intent_mentions if iso3_od == "DEUHUN" & year == 2018
+
 reshape wide actor iso3_od_dir intent_events visits_events intent_mentions visits_mentions, i(iso3_od year) j(order)
+
+sum intent_mentions1 if iso3_od == "DEUHUN" & year == 2018 
+sum intent_mentions2 if iso3_od == "DEUHUN" & year == 2018 
 
 expand 2
 bys iso3_od year: gen order = _n
@@ -43,8 +51,36 @@ foreach var in actor iso3_od_dir intent_events visits_events intent_mentions vis
 
 *browse if iso3_od == "DEUHUN"
 
-drop iso3_od_dir_importer actor_exporter actor_importer order iso3_od
 rename iso3_od_dir_exporter iso3_od_dir
 drop if iso3_od_dir == ""
 
+count
+count if missing(actor_exporter)
+count if missing(actor_importer)
+
+replace actor_importer = substr(iso3_od_dir,4,3) if actor_importer == ""
+
+count if missing(actor_importer)
+
+gen eu = 0
+foreach iso in AUT BEL BGR CYP CZE DEU DNK ESP EST FIN FRA GBR GRC HRV HUN IRL ITA LTU LUX LVA MLT NLD POL PRT ROM SVK SVN SWE {
+	replace eu = 1 if actor_exporter == "`iso'"
+}
+
+bys actor_importer year: egen intent_events_eu = mean(intent_events_exporter) if eu
+bys actor_importer year: egen visits_events_eu = mean(visits_events_exporter) if eu
+
+drop iso3_od_dir_importer actor_exporter actor_importer order iso3_od eu
+
 save "temp/gdelt-clean.dta", replace
+
+keep if substr(iso3_od_dir,1,3) == "EUR"
+
+rename intent_events_exporter intent_events_agency
+rename visits_events_exporter visits_events_agency
+
+gen iso3_d = substr(iso3_od_dir,4,3)
+
+keep year intent_events_agency visits_events_agency iso3_d
+
+save "temp/gdelt-agency-clean.dta", replace
