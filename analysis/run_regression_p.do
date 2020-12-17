@@ -21,6 +21,9 @@ estimates store p_gravity_wtrade
 rename intent_events_exporter intent
 rename visits_events_exporter visits
 
+twoway (histogram intent, color(black%30)) (histogram visits, color(grey%30)), legend(order(1 "intent" 2 "visits" )) graphregion(color(white)) ytitle("") xtitle("number of events")
+graph export "output/hist_dependent_all.png", replace
+
 * gravity model without p without FE without political variables (4)
 foreach var of varlist $outcomes_simple {
 	ppmlhdfe `var' ln_distw ln_gdp* ln_good_total, noabsorb cluster($index_vars)
