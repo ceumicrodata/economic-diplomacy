@@ -72,6 +72,9 @@ bys actor_importer year: egen visits_events_eu = mean(visits_events_exporter) if
 
 drop iso3_od_dir_importer actor_exporter actor_importer order iso3_od eu
 
+twoway (histogram intent_events_exporter, color(green%30)) (histogram visits_events_exporter, color(red%30)), legend(order(1 "intent" 2 "visits" )) graphregion(color(white)) ytitle("") xtitle("number of events")
+graph export "output/hist_dependent_before.png", replace
+
 save "temp/gdelt-clean.dta", replace
 
 keep if substr(iso3_od_dir,1,3) == "EUR"
