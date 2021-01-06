@@ -1,9 +1,12 @@
 include local_settings.mk
+INVPROJECTS = $(wildcard data/investment/*.csv)
 all: output/results_append.tex
+
+investment: $(foreach f,$(INVPROJECTS),output/investment/$(notdir $f))
 
 temp/p-values-trade.csv: temp/shipment-clean.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
-data/external/p-values-%.csv: data/external/%.csv analysis/KLD.jl
+output/investment/%.csv: data/investment/%.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
 output/results_append.tex: analysis/master.do analysis/create_variables.do analysis/run_regression_p.do analysis/graph_p.do output/analysis-sample.dta temp/eu-related-countries.csv temp/p-values-trade.csv
 	stata -b do $<
