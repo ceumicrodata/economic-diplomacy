@@ -4,13 +4,13 @@ all: output/results_append.tex
 
 investment: $(foreach f,$(INVPROJECTS),output/investment/$(notdir $f))
 
-temp/p-values-trade.csv: temp/shipment-clean.csv analysis/KLD.jl
+output/trade/polya-index.csv: temp/shipment-clean.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
 output/investment/%.csv: data/investment/%.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
-output/results_append.tex: analysis/master.do analysis/create_variables.do analysis/run_regression_p.do analysis/graph_p.do output/analysis-sample.dta temp/eu-related-countries.csv temp/p-values-trade.csv
+output/results_append.tex: analysis/master.do analysis/create_variables.do analysis/run_regression_p.do analysis/graph_p.do output/analysis-sample.dta temp/eu-related-countries.csv output/trade/polya-index.csv
 	stata -b do $<
-output/analysis-sample.dta: merge.do temp/po-clean.dta temp/gdp-clean.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/kld-clean.dta input/un/un.dta temp/p-values-trade.csv
+output/analysis-sample.dta: merge.do temp/po-clean.dta temp/gdp-clean.dta temp/qog-clean.dta temp/gdelt-clean.dta temp/geodist-clean.dta temp/aggregated-clean.dta temp/kld-clean.dta input/un/un.dta output/trade/polya-index.csv
 	stata -b do $<
 temp/po-clean.dta: clean_po.do input/public-opinion/ebs_491.xls
 	stata -b do $<
