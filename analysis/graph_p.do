@@ -8,7 +8,7 @@ clonevar iso2_o = iso_3166_2
 clonevar iso2_d = iso_3166_2
 save `eu'
 
-import delimited "temp/p-values-trade.csv", clear
+import delimited "output/trade/polya-index.csv", clear
 
 merge m:1 iso2_o using `eu', nogen keep(master match)
 rename relation eu_relation_exporter
