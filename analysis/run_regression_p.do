@@ -150,7 +150,7 @@ esttab p_gravity_wotrade p_gravity_wtrade using "${here}/output/results_gravity_
 	label booktabs b(3) p(3) eqlabels(none) collabels("") width(1.0\hsize) compress legend ///
 	drop(_cons) ///
 	star(* 0.10 ** 0.05 *** 0.01) ///
-	title(Gravity equation on the p-values\label{tab1}) ///
+	title(Larger, closer countries have more similar trade patterns\label{tab1}) ///
 	nonumbers ///
 	mlabel("\shortstack{Model 1 \\ without trade flow}" "\shortstack{Model 2 \\ with trade flow}") ///
 	addnote("Notes: Linear model is used for estimation." "Standard errors: Clustered standard errors are in parantheses." "Sample: all countries.") ///
@@ -161,7 +161,7 @@ esttab gravity_intent gravity_visits using "${here}/output/results_gravity_depen
 	label booktabs b(3) p(3) eqlabels(none) collabels("") width(1.0\hsize) compress legend ///
 	drop(_cons) ///
 	star(* 0.10 ** 0.05 *** 0.01) ///
-	title(Gravity equation on the dependent variables\label{tab2}) ///
+	title(The gravity equation holds for measures of economic diplomacy\label{tab2}) ///
 	nonumbers ///
 	mlabel("\shortstack{Model 1 \\ intent}" "\shortstack{Model 2 \\ visits}") ///
 	addnote("Notes: Poisson pseudo-likelihood regression is used for estimation." "Standard errors: Clustered standard errors are in parantheses." "Sample: all countries.") ///
