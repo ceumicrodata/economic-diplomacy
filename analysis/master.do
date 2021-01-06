@@ -37,3 +37,7 @@ use "${here}/output/analysis-sample.dta", clear
 do "${here}/analysis/create_variables.do"
 do "${here}/analysis/run_regression_inv.do"
 
+use "${here}/output/analysis-sample.dta", clear
+do "${here}/analysis/create_variables.do"
+do "${here}/analysis/run_regression_all.do"
+
