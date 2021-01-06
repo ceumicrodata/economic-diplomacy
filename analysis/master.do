@@ -26,13 +26,14 @@ do "${here}/analysis/graph_p.do"
 
 use "${here}/output/analysis-sample.dta", clear
 do "${here}/analysis/create_variables.do"
+do "${here}/analysis/run_regression_p.do"
 *do "${here}/analysis/graph_hungary.do"
 *do "${here}/analysis/run_regression.do"
 *do "${here}/analysis/run_regression_slides.do"
-do "${here}/analysis/run_regression_p.do"
 *do "${here}/analysis/run_regression_russia.do"
 *do "${here}/analysis/run_regression_examples.do"
-use "${here}/output/analysis-sample_inv.dta", clear
+
+use "${here}/output/analysis-sample.dta", clear
 do "${here}/analysis/create_variables.do"
 do "${here}/analysis/run_regression_inv.do"
 

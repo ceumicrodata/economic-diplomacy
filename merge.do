@@ -102,16 +102,16 @@ merge 1:1 iso2_o iso2_d year using "temp/shipment-clean-aggregated.dta", keep(1 
 
 count
 
-*preserve
-*import delimited "/home/zavecz/final/economic-diplomacy/data/external/p-values-FDI_from_EU_200318_wide_split.csv", clear
-*rename iso2_o iso3_o
-*rename iso2_d iso3_d
-*rename p p_inv
-*tempfile p_inv
-*save `p_inv'
-*restore
+preserve
+import delimited "output/investment/FDI_from_EU_200318_wide_split_eu.csv", clear
+rename iso2_o iso3_o
+rename iso2_d iso3_d
+rename p p_inv
+tempfile p_inv
+save `p_inv'
+restore
 
-*merge 1:1 iso3_o iso3_d year using `p_inv', keep(1 3) nogen
-*count
+merge 1:1 iso3_o iso3_d year using `p_inv', keep(1 3) nogen
+count
 
 save "output/analysis-sample.dta", replace
