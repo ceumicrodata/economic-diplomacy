@@ -10,8 +10,20 @@ clonevar iso2_d = iso_3166_2
 save `eu'
 
 * p is moved to be the base of the dataset
+
 *import delimited "temp/p-values-trade.csv", clear
-import delimited "data/external/p-values-FDI_from_EU_200318_wide_split.csv", clear
+*import delimited "output/investment/FDI_from_EU_200318_wide_split.csv", clear
+*preserve
+*import delimited "output/investment/FDI_from_EU_200318_wide_split_eu.csv", clear
+*tempfile inv
+*save `inv'
+*restore
+*append using `inv', gen(origin)
+*duplicates tag iso2_o iso2_d year, gen(source)
+*tab origin source
+
+import delimited "output/investment/FDI_from_EU_200318_wide_split_eu.csv", clear
+
 rename p p_inv
 rename iso2_o iso3_o
 rename iso2_d iso3_d
