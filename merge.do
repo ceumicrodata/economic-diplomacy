@@ -114,4 +114,15 @@ restore
 merge 1:1 iso3_o iso3_d year using `p_inv', keep(1 3) nogen
 count
 
+preserve
+import delimited "temp/FDI_from_EU_200318_EU_aggregate.csv", clear
+rename o_iso iso3_o
+rename d_iso iso3_d
+tempfile fdi
+save `fdi'
+restore
+
+merge 1:1 iso3_o iso3_d year using `fdi', keep(1 3) nogen
+count
+
 save "output/analysis-sample.dta", replace

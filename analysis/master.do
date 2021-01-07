@@ -1,5 +1,5 @@
 * save variable lists  and different samples to be used in transormations and regressions
-global log_vars good_total distw dem_diff agree po_diff kld* // p
+global log_vars good_total distw dem_diff agree po_diff kld* num_inv // p
 global log_vars_single gdp_o gdp_d
 global level_vars intent* visits* kld* eu_relation_exporter eu_relation_importer p* shipments_large polya_dummy
 global dummy_vars contig comlang_off colony comcol landlocked_o landlocked_d 
