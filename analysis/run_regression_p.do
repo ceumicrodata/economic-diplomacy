@@ -41,7 +41,7 @@ foreach sample in all eu neighbor other {
 * gravity model with p without FE with political variables (8)
 foreach sample in all eu neighbor other {
 		foreach var of varlist $outcomes_simple {
-			ppmlhdfe `var' p ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree ln_dem_diff if $`sample', noabsorb cluster($index_vars)
+			ppmlhdfe `var' p ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree dem_diff if $`sample', noabsorb cluster($index_vars)
 			estimates store `sample'_`var'_2
 	}
 }
@@ -57,7 +57,7 @@ foreach sample in all eu neighbor other {
 * gravity model with p with FE with political variables (8)
 foreach sample in all eu neighbor other {
 		foreach var of varlist $outcomes_simple {
-			ppmlhdfe `var' p ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
+			ppmlhdfe `var' p ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree dem_diff if $`sample', a(`dummies') cluster($index_vars)
 			estimates store `sample'_`var'_4
 	}
 }
@@ -65,7 +65,7 @@ foreach sample in all eu neighbor other {
 * gravity model with p without FE with political variables - only large shipments (8)
 foreach sample in all eu neighbor other {
 		foreach var of varlist $outcomes_simple {
-			ppmlhdfe `var' p ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree ln_dem_diff if $`sample' & shipments_large, noabsorb cluster($index_vars)
+			ppmlhdfe `var' p ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree dem_diff if $`sample' & shipments_large, noabsorb cluster($index_vars)
 			estimates store `sample'_`var'_5
 	}
 }
@@ -81,7 +81,7 @@ foreach sample in all eu neighbor other {
 * gravity model with polya without FE with political variables (8)
 foreach sample in all eu neighbor other {
 		foreach var of varlist $outcomes_simple {
-			ppmlhdfe `var' polya_dummy ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree ln_dem_diff if $`sample', noabsorb cluster($index_vars)
+			ppmlhdfe `var' polya_dummy ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree dem_diff if $`sample', noabsorb cluster($index_vars)
 			estimates store `sample'_`var'_2_polya
 	}
 }
@@ -97,7 +97,7 @@ foreach sample in all eu neighbor other {
 * gravity model with polya with FE with political variables (8)
 foreach sample in all eu neighbor other {
 		foreach var of varlist $outcomes_simple {
-			ppmlhdfe `var' polya_dummy ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree ln_dem_diff if $`sample', a(`dummies') cluster($index_vars)
+			ppmlhdfe `var' polya_dummy ln_good_total ln_distw ln_gdp* $dummy_vars `var'_events_eu `var'_events_agency ln_agree dem_diff if $`sample', a(`dummies') cluster($index_vars)
 			estimates store `sample'_`var'_4_polya
 	}
 }
