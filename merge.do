@@ -12,6 +12,7 @@ save `eu'
 * p is moved to be the base of the dataset
 import delimited "output/trade/polya-index.csv", clear
 generate polya_dummy = (p > 0.5) & !missing(p)
+mvdecode polya_dummy if p == ., mv(0)
 
 merge 1:1 iso2_o iso2_d year using "temp/kld-clean.dta", keep(master match) nogen
 count
@@ -112,6 +113,8 @@ save `p_inv'
 restore
 
 merge 1:1 iso3_o iso3_d year using `p_inv', keep(1 3) nogen
+generate polya_dummy_inv = ((p_inv > 0.5) & !missing(p_inv))
+mvdecode polya_dummy_inv if p_inv == ., mv(0)
 count
 
 preserve
