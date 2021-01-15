@@ -23,7 +23,8 @@ do "${here}/analysis/graph_p.do"
 
 use "${here}/output/analysis-sample.dta", clear
 do "${here}/analysis/create_variables.do"
-do "${here}/analysis/run_regression_overleaf.do"
+*do "${here}/analysis/run_regression_overleaf.do"
+do "${here}/analysis/run_regression_overleaf_lag.do"
 
 *use "${here}/output/analysis-sample.dta", clear
 *do "${here}/analysis/create_variables.do"
