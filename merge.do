@@ -40,9 +40,13 @@ continent_o city_en_o area_d dis_int_d landlocked_d continent_d city_en_d) keep(
 
 gen iso3_od_dir = iso3_o + iso3_d
 drop if iso3_od_dir == ""
-merge 1:1 iso3_od_dir year using "temp/gdelt-clean.dta", nogen keep(3)
+*merge 1:1 iso3_od_dir year using "temp/gdelt-clean.dta", nogen keep(3)
+merge 1:1 iso3_od_dir year using "temp/gdelt-clean.dta"
+
+keep if _merge == 3 | year == 2014
 
 count
+tab year
 
 merge m:1 iso3_d year using  "temp/gdelt-agency-clean.dta", keep(1 3) nogen
 
