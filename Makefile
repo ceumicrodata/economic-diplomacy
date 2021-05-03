@@ -4,7 +4,7 @@ all: output/results_append.tex
 
 investment: $(foreach f,$(INVPROJECTS),output/investment/$(notdir $f))
 
-output/trade/polya-index.csv: temp/shipment-clean.csv analysis/KLD.jl
+output/trade/polya-index.csv: input/spanish-trade-count/transactions.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
 output/investment/%.csv: data/investment/%.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@

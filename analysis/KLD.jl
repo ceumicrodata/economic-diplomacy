@@ -55,18 +55,16 @@ end
 
 function main(input_file::String, output_file::String)
     data = DataFrame(load(input_file))
-    years = unique(data.year)
 
-    header = Array(data[:,1:3])
-    input = Array(data[:,4:end])
+    header = Array(data[:,1:2])
+    input = Array(data[:,3:end])
     output = ones(Float64, size(input, 1))
 
-    Threads.@threads for row in eachrow(unique(data[:,2:3]))
+    Threads.@threads for row in eachrow(unique(data[:,1:1]))
         d = row[1]
-        t = row[2]
-        println(d, t)
+        println(d)
 
-        indexes = (header[:,2] .== d) .& (header[:,3] .== t)
+        indexes = (header[:,1] .== d)
         subset = input[indexes, :]
         long_p_vector = ones(Float64, size(subset, 1))
         short_p_vector, non_empty_columns = compute_p_values(flip(subset), debug=false)
@@ -76,7 +74,7 @@ function main(input_file::String, output_file::String)
         output[indexes] .= round.(long_p_vector*1e4) / 1e4
     end
 
-    df = DataFrame(iso2_o=header[:,1], iso2_d=header[:,2], year=header[:,3], p=output)
+    df = DataFrame(origin=header[:,2], destination=header[:,1], p=output)
     save(output_file, df)
 end
 
