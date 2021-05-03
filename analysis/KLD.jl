@@ -1,7 +1,7 @@
 using Distributions
 using Random
 using DataFrames
-using CSVFiles
+using CSV
 include("./polya.jl")
 using .Polya
 
@@ -54,7 +54,7 @@ function flip(A::Array) :: Array
 end
 
 function main(input_file::String, output_file::String)
-    data = DataFrame(load(input_file))
+    data = DataFrame(CSV.File(input_file))
 
     header = Array(data[:,1:2])
     input = Array(data[:,3:end])
