@@ -4,6 +4,32 @@ using DataFrames
 using CSV
 include("./polya.jl")
 using .Polya
+using ArgParse
+
+function string_to_symbols(s::String)
+    return Symbol.(split(s, ","))
+end
+
+function parse_commandline()
+    s = ArgParseSettings()
+
+    @add_arg_table s begin
+        "--index"
+            help = "Column names to index each input row, separated by comma"
+            required = true
+        "--by"
+            help = "Column names to index each output row, separated by comma"
+            required = true
+        "input_file"
+            help = "Input file to read"
+            required = true
+        "output_file"
+            help = "Output file to write"
+            required = true
+    end
+
+    return parse_args(s)
+end
 
 function compute_KLD(share::Array{Float64,N}, p::Vector{Float64}) where {N}
     all(sum(share, dims=1) .≈ 1) || throw(ArgumentError("Shares have to sum to 1.")) 
@@ -53,31 +79,36 @@ function flip(A::Array) :: Array
     return Array(A')
 end
 
-function main(input_file::String, output_file::String)
+function main(input_file::String, output_file::String, input_index::Array{Symbol,1}, by_index::Array{Symbol,1})
     data = DataFrame(CSV.File(input_file))
+    hcols = length(input_index)
+    # pre-allocate memory
+    insertcols!(data, hcols+1, :p => ones(Float64, size(data, 1)))
+    grouped_rows = groupby(data, by_index)
 
-    header = Array(data[:,1:2])
-    input = Array(data[:,3:end])
-    output = ones(Float64, size(input, 1))
+    Threads.@threads for group in collect(SubDataFrame, grouped_rows)
+        index_value = group[1, by_index]
+        println(index_value)
 
-    Threads.@threads for row in eachrow(unique(data[:,1:1]))
-        d = row[1]
-        println(d)
-
-        indexes = (header[:,1] .== d)
-        subset = input[indexes, :]
+        # Column hcols+1 is :p, everything to the right is data
+        subset = Array(group[:, hcols+2:end])
         long_p_vector = ones(Float64, size(subset, 1))
         short_p_vector, non_empty_columns = compute_p_values(flip(subset), debug=false)
         # only use p values for countries with non-missing data, rest are 1.0
         long_p_vector[non_empty_columns] .= short_p_vector
         # round p-value to 4 digits
-        output[indexes] .= round.(long_p_vector*1e4) / 1e4
+        group[:, :p] .= round.(long_p_vector*1e4) / 1e4
     end
 
-    df = DataFrame(origin=header[:,2], destination=header[:,1], p=output)
-    save(output_file, df)
+    CSV.write(output_file, data[:, vcat(input_index, [:p])])
 end
 
 # call from the command line: "julia KLD.jl ../temp/shipment-clean.csv ../temp/p-values.csv"
-main(ARGS[1], ARGS[2])
+parsed_args = parse_commandline()
+input_file = parsed_args["input_file"]
+output_file = parsed_args["output_file"]
+input_index =string_to_symbols(parsed_args["index"])
+by_index = string_to_symbols(parsed_args["by"])
+
+main(input_file, output_file, input_index, by_index)
 

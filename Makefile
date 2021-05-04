@@ -5,7 +5,7 @@ all: output/results_append.tex
 investment: $(foreach f,$(INVPROJECTS),output/investment/$(notdir $f))
 
 output/trade/polya-index.csv: input/spanish-trade-count/transactions.csv analysis/KLD.jl
-	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
+	cd analysis/ && $(JULIA) KLD.jl --index iso2_d,region_o --by iso2_d ../$< ../$@
 output/investment/%.csv: data/investment/%.csv analysis/KLD.jl
 	cd analysis/ && $(JULIA) KLD.jl ../$< ../$@
 output/results_append.tex: analysis/master.do analysis/create_variables.do analysis/run_regression_p.do analysis/graph_p.do output/analysis-sample.dta temp/eu-related-countries.csv output/trade/polya-index.csv
