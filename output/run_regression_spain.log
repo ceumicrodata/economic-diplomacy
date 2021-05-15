@@ -1,0 +1,74 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/zavecz/final/economic-diplomacy//output/run_regression_spain.log
+  log type:  text
+ opened on:  15 May 2021, 13:12:15
+
+. 
+. use "`here'/output/analysis-sample-spain.dta", clear
+
+. 
+. foreach X of varlist distw gdp* good_total {
+  2.         generate ln_`X' = ln(`X')
+  3. }
+(166 missing values generated)
+
+. 
+. reghdfe p ln_distw ln_gdp*, noabsorb cluster(region_o iso2_d)
+note: ln_gdp_o is probably collinear with the fixed effects (all partialled-out values are close to zero; tol = 1.0e-09)
+(MWFE estimator converged in 1 iterations)
+Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Gelbach & Miller applied.
+note: ln_gdp_o omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =      4,315
+Absorbing 1 HDFE group                            F(   2,     49) =      31.58
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0490
+                                                  Adj R-squared   =     0.0486
+Number of clusters (region_o) =         50        Within R-sq.    =     0.0490
+Number of clusters (iso2_d)  =         95         Root MSE        =     0.4048
+
+                       (Std. Err. adjusted for 50 clusters in region_o iso2_d)
+------------------------------------------------------------------------------
+             |               Robust
+           p |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    ln_distw |   .0942579   .0151816     6.21   0.000     .0637492    .1247665
+    ln_gdp_o |          0   4.19e-13     0.00   1.000    -8.42e-13    8.42e-13
+    ln_gdp_d |  -.0312315   .0057047    -5.47   0.000    -.0426955   -.0197675
+       _cons |   .3624386   .1876691     1.93   0.059    -.0146965    .7395737
+------------------------------------------------------------------------------
+
+. reghdfe p ln_distw ln_gdp* ln_good_total, noabsorb cluster(region_o iso2_d)
+note: ln_gdp_o is probably collinear with the fixed effects (all partialled-out values are close to zero; tol = 1.0e-09)
+(MWFE estimator converged in 1 iterations)
+Warning: VCV matrix was non-positive semi-definite; adjustment from Cameron, Gelbach & Miller applied.
+note: ln_gdp_o omitted because of collinearity
+
+HDFE Linear regression                            Number of obs   =      4,315
+Absorbing 1 HDFE group                            F(   3,     49) =      21.49
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0506
+                                                  Adj R-squared   =     0.0499
+Number of clusters (region_o) =         50        Within R-sq.    =     0.0506
+Number of clusters (iso2_d)  =         95         Root MSE        =     0.4045
+
+                        (Std. Err. adjusted for 50 clusters in region_o iso2_d)
+-------------------------------------------------------------------------------
+              |               Robust
+            p |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     ln_distw |   .0744358   .0175386     4.24   0.000     .0391907    .1096809
+     ln_gdp_o |          0   4.79e-13     0.00   1.000    -9.62e-13    9.62e-13
+     ln_gdp_d |  -.0125411    .010498    -1.19   0.238    -.0336375    .0085554
+ln_good_total |  -.0203645   .0104307    -1.95   0.057    -.0413258    .0005968
+        _cons |   .4724181   .1937348     2.44   0.018     .0830936    .8617427
+-------------------------------------------------------------------------------
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /home/zavecz/final/economic-diplomacy//output/run_regression_spain.log
+  log type:  text
+ closed on:  15 May 2021, 13:12:15
+--------------------------------------------------------------------------------------------------------------------------------------------------------------

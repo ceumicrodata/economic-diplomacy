@@ -1,0 +1,384 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/zavecz/final/economic-diplomacy//output/merge_spain.log
+  log type:  text
+ opened on:  15 May 2021, 13:10:58
+
+. 
+. * read EU groups of countries
+. import delimited "`here'/temp/eu-related-countries.csv", varnames(1) clear
+(3 vars, 56 obs)
+
+. replace iso_3166_2 = "GR" if iso_3166_2 == "EL"
+(1 real change made)
+
+. replace iso_3166_2 = "GB" if iso_3166_2 == "UK"
+(1 real change made)
+
+. replace relation = "EU" if iso_3166_2 == "GB"
+(1 real change made)
+
+. tempfile eu
+
+. 
+. clonevar iso2_o = iso_3166_2
+
+. clonevar iso2_d = iso_3166_2
+
+. save `eu'
+file /tmp/St07801.000001 saved
+
+. 
+. * p is moved to be the base of the dataset
+. import delimited "`here'/output/trade/polya-index.csv", clear
+(3 vars, 7,924 obs)
+
+. generate polya_dummy = (p > 0.5) & !missing(p)
+
+. gen year = 2016
+
+. gen iso2_o = "ES"
+
+. 
+. histogram p, color(green%30) ytitle("") xtitle("p-values") bin(100) graphregion(color(white))
+(bin=100, start=0, width=.01)
+
+. graph export "`here'/output/scatter_p_spain.png", replace
+(file /home/zavecz/final/economic-diplomacy//output/scatter_p_spain.png written in PNG format)
+
+. 
+. merge m:1 iso2_o iso2_d year using "`here'/temp/kld-clean.dta", keep(master match) nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                             7,924  
+    -----------------------------------------
+
+. count
+  7,924
+
+. 
+. * is the exporter an EU country?
+. merge m:1 iso2_o using `eu', nogen keep(master match)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                             7,924  
+    -----------------------------------------
+
+. rename relation eu_relation_exporter
+
+. * is the importer an EU country?
+. merge m:1 iso2_d using `eu', nogen keep(master match)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         5,414
+        from master                     5,414  
+        from using                          0  
+
+    matched                             2,510  
+    -----------------------------------------
+
+. rename relation eu_relation_importer
+
+. 
+. merge m:1 iso2_o iso2_d year using "`here'/temp/aggregated-clean.dta", nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                       102,696
+        from master                         0  
+        from using                    102,696  
+
+    matched                             7,924  
+    -----------------------------------------
+
+. 
+. merge m:1 iso2_o iso2_d using "`here'/temp/geodist-clean.dta", keepusing(iso3_o iso3_d ///
+> iso3_od contig-distwces distwces area_o dis_int_o landlocked_o ///
+> continent_o city_en_o area_d dis_int_d landlocked_d continent_d city_en_d) keep(1 3) nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         9,101
+        from master                     9,101  
+        from using                          0  
+
+    matched                           101,519  
+    -----------------------------------------
+
+. 
+. *merge m:1 iso3_od year using "temp/gdelt-clean.dta", // keep(3) nogen
+. 
+. *tab year _merge
+. *tab year _merge if tci_ != .
+. 
+. *keep if _merge == 3
+. *drop _merge
+. 
+. gen iso3_od_dir = iso3_o + iso3_d
+(9,101 missing values generated)
+
+. drop if iso3_od_dir == ""
+(9,101 observations deleted)
+
+. merge m:1 iso3_od_dir year using "`here'/temp/gdelt-clean.dta", nogen keep(3)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            10,447  
+    -----------------------------------------
+
+. 
+. count
+  10,447
+
+. 
+. merge m:1 iso3_d year using  "`here'/temp/gdelt-agency-clean.dta", keep(1 3) nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           393
+        from master                       393  
+        from using                          0  
+
+    matched                            10,054  
+    -----------------------------------------
+
+. 
+. preserve
+
+. foreach type in o d {
+  2.         use "`here'/temp/qog-clean.dta", clear
+  3. 
+.         rename ccodealp iso3
+  4.         
+.         foreach var of varlist _all {
+  5.                 rename `var' `var'_`type'
+  6.         }
+  7.         
+.         rename year_`type' year
+  8. 
+.         tempfile political_`type'
+  9.         save `political_`type''
+ 10. }
+(Quality of Government Basic dataset 2020 - Time-Series)
+file /tmp/St07801.000003 saved
+(Quality of Government Basic dataset 2020 - Time-Series)
+file /tmp/St07801.000004 saved
+
+. restore
+
+. 
+. merge m:1 iso3_o year using `political_o', nogen keep(1 3)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            10,447  
+    -----------------------------------------
+
+. merge m:1 iso3_d year using `political_d', nogen keep(1 3)
+(label wr_regt already defined)
+(label yesno already defined)
+(label govstruct already defined)
+(label lelecsystem already defined)
+(label ht_colonial already defined)
+(label ht_region already defined)
+(label regtypeny already defined)
+(label regimeny already defined)
+(label slavel already defined)
+(label yes_no_other1 already defined)
+(label yes_no_other already defined)
+(label SAX2014 already defined)
+(label chga already defined)
+(label gov_type already defined)
+(label valname already defined)
+(label gol_est_spec_lab already defined)
+(label gol_est_lab already defined)
+(label gol_pr_la already defined)
+(label regimetype already defined)
+(label lp_legorlabel already defined)
+(label nelda already defined)
+(label Watts2 already defined)
+(label elecfam72_04 already defined)
+(label vi_wcoord already defined)
+(label vi_rsm already defined)
+(label vi_rsg already defined)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           432
+        from master                       432  
+        from using                          0  
+
+    matched                            10,015  
+    -----------------------------------------
+
+. 
+. gen dem_diff = abs(fh_ipolity2_o - fh_ipolity2_d)
+(432 missing values generated)
+
+. 
+. merge m:1 iso3_od year using "`here'/input/un/un.dta", nogen keep(1 3)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                            86
+        from master                        86  
+        from using                          0  
+
+    matched                            10,361  
+    -----------------------------------------
+
+. 
+. count
+  10,447
+
+. 
+. preserve
+
+. foreach type in o d {
+  2.         use "`here'/temp/gdp-clean.dta", clear
+  3. 
+.         rename Country_Code iso3_`type'
+  4.         
+.         rename gdp gdp_`type'
+  5. 
+.         tempfile economic_`type'
+  6.         save `economic_`type''
+  7. }
+file /tmp/St07801.000006 saved
+file /tmp/St07801.000007 saved
+
+. restore
+
+. 
+. merge m:1 iso3_o year using `economic_o', nogen keep(1 3)
+(note: variable iso3_o was str3, now str28 to accommodate using data's values)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            10,447  
+    -----------------------------------------
+
+. merge m:1 iso3_d year using `economic_d', nogen keep(1 3)
+(note: variable iso3_d was str3, now str28 to accommodate using data's values)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                            74
+        from master                        74  
+        from using                          0  
+
+    matched                            10,373  
+    -----------------------------------------
+
+. 
+. count
+  10,447
+
+. 
+. *foreach var in intent_events visits_events intent_mentions visits_mentions {
+. *       gen `var'_exporter = cond(iso3_o == actor1, `var'1, `var'2)
+. *       drop `var'1 `var'2
+. *}
+. 
+. merge m:1 iso2_od using "`here'/temp/po-clean", nogen keep(1 3)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         9,652
+        from master                     9,652  
+        from using                          0  
+
+    matched                               795  
+    -----------------------------------------
+
+. 
+. count
+  10,447
+
+. 
+. merge m:1 iso2_o iso2_d year using "`here'/temp/shipment-clean-aggregated.dta", keep(1 3) keepusing(shipments_large) nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            10,447  
+    -----------------------------------------
+
+. 
+. count
+  10,447
+
+. 
+. preserve
+
+. import delimited "`here'/output/investment/FDI_from_EU_200318_wide_split_eu.csv", clear
+(4 vars, 14,874 obs)
+
+. rename iso2_o iso3_o
+
+. rename iso2_d iso3_d
+
+. rename p p_inv
+
+. tempfile p_inv
+
+. save `p_inv'
+file /tmp/St07801.000009 saved
+
+. restore
+
+. 
+. merge m:1 iso3_o iso3_d year using `p_inv', keep(1 3) nogen
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         5,215
+        from master                     5,215  
+        from using                          0  
+
+    matched                             5,232  
+    -----------------------------------------
+
+. count
+  10,447
+
+. 
+. tab year if p != .
+
+       year |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       2016 |      4,481      100.00      100.00
+------------+-----------------------------------
+      Total |      4,481      100.00
+
+. tab iso2_o if p != .
+
+     iso2_o |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         ES |      4,481      100.00      100.00
+------------+-----------------------------------
+      Total |      4,481      100.00
+
+. 
+. keep if p != .
+(5,966 observations deleted)
+
+. 
+. save "`here'/output/analysis-sample-spain.dta", replace
+file /home/zavecz/final/economic-diplomacy//output/analysis-sample-spain.dta saved
+
+. log close
+      name:  <unnamed>
+       log:  /home/zavecz/final/economic-diplomacy//output/merge_spain.log
+  log type:  text
+ closed on:  15 May 2021, 13:11:01
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
