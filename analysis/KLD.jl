@@ -40,7 +40,13 @@ function compute_KLD(share::Array{Float64,N}, p::Vector{Float64}) where {N}
     return sum(share .* deviation, dims=1)
 end
 
-function compute_p_values(A; debug=false)
+function KLD_metric(data::Array{Int64,N}, params::DirichletMultinomial) where {N}
+    share = data ./ sum(data, dims=1)
+    p = params.α / params.α0
+    return compute_KLD(share, p)
+end
+
+function compute_p_values(A::Array{Int64,2}, f::Function; debug=false)
     # countries with positive shipments
     non_empty_columns = vec(sum(A, dims=1) .> 0)
     # exclude empty rows
@@ -58,18 +64,16 @@ function compute_p_values(A; debug=false)
     (K > 1 && N > 1) || return ones(Float64, N), non_empty_columns
 
     H0_params = Polya.mle(DirichletMultinomial, data, tol=1e-4)
-    H0_shares = H0_params.α ./ sum(H0_params.α)
-    actual_KLD = compute_KLD(data ./ sum(data, dims=1), H0_shares)
+    actual_metric = f(data, H0_params)
     
     p = zeros(Float64, N)
     for i = 1:N
         # actual number of shipments treated as a parameter
         H1 = DirichletMultinomial(sum(data[:,i]), H0_params.α)
         pmf = Polya.simulate_ECDF(H1, 
-            x -> compute_KLD(x ./ sum(x, dims=1), 
-                    H0_params.α ./ H0_params.α0), 
+            x -> f(x, H0_params), 
             maxiter=10000, digits=3)
-        p[i] = 1 - cdf(pmf, actual_KLD[1,i])
+        p[i] = 1 - cdf(pmf, actual_metric[1,i])
     end
     # return the p vector and an index of where to put it
     return p, non_empty_columns
@@ -93,11 +97,11 @@ function main(input_file::String, output_file::String, input_index::Array{Symbol
         # Column hcols+1 is :p, everything to the right is data
         subset = Array(group[:, hcols+2:end])
         long_p_vector = ones(Float64, size(subset, 1))
-        short_p_vector, non_empty_columns = compute_p_values(flip(subset), debug=false)
+        short_p_vector, non_empty_columns = compute_p_values(flip(subset), KLD_metric, debug=false)
         # only use p values for countries with non-missing data, rest are 1.0
         long_p_vector[non_empty_columns] .= short_p_vector
         # round p-value to 4 digits
-        group[:, :p] .= round.(long_p_vector*1e4) / 1e4
+        group[:, :p] .= round.(long_p_vector, digits=4)
     end
 
     CSV.write(output_file, data[:, vcat(input_index, [:p])])
@@ -109,6 +113,7 @@ input_file = parsed_args["input_file"]
 output_file = parsed_args["output_file"]
 input_index =string_to_symbols(parsed_args["index"])
 by_index = string_to_symbols(parsed_args["by"])
+
 
 main(input_file, output_file, input_index, by_index)
 
