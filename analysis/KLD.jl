@@ -43,7 +43,7 @@ end
 function KLD_metric(data::Array{Int64,N}, params::DirichletMultinomial) where {N}
     share = data ./ sum(data, dims=1)
     p = params.α / params.α0
-    return compute_KLD(share, p)
+    return compute_KLD(share, p)[1,:]
 end
 
 function compute_p_values(A::Array{Int64,2}, f::Function; debug=false)
@@ -73,38 +73,43 @@ function compute_p_values(A::Array{Int64,2}, f::Function; debug=false)
         pmf = Polya.simulate_ECDF(H1, 
             x -> f(x, H0_params), 
             maxiter=10000, digits=3)
-        p[i] = 1 - cdf(pmf, actual_metric[1,i])
+        p[i] = 1 - cdf(pmf, actual_metric[i])
     end
     # return the p vector and an index of where to put it
-    return p, non_empty_columns
+    return actual_metric, p, non_empty_columns
 end
 
 function flip(A::Array) :: Array
     return Array(A')
 end
 
-function main(input_file::String, output_file::String, input_index::Array{Symbol,1}, by_index::Array{Symbol,1})
+function main(input_file::String, output_file::String, input_index::Array{Symbol,1}, by_index::Array{Symbol,1}, f::Function)
     data = DataFrame(CSV.File(input_file))
     hcols = length(input_index)
     # pre-allocate memory
-    insertcols!(data, hcols+1, :p => ones(Float64, size(data, 1)))
+    insertcols!(data, hcols+1, 
+        :KLD => zeros(Float64, size(data, 1)),
+        :p => ones(Float64, size(data, 1)))
     grouped_rows = groupby(data, by_index)
 
-    Threads.@threads for group in collect(SubDataFrame, grouped_rows)
+    Threads.@threads for group in collect(SubDataFrame, grouped_rows)[1:2]
         index_value = group[1, by_index]
         println(index_value)
 
         # Column hcols+1 is :p, everything to the right is data
-        subset = Array(group[:, hcols+2:end])
+        subset = Array{Int64}(group[:, hcols+2:end])
+        long_KLD = zeros(Float64, size(subset, 1))
         long_p_vector = ones(Float64, size(subset, 1))
-        short_p_vector, non_empty_columns = compute_p_values(flip(subset), KLD_metric, debug=false)
+        KLD, short_p_vector, non_empty_columns = compute_p_values(flip(subset), f, debug=false)
         # only use p values for countries with non-missing data, rest are 1.0
         long_p_vector[non_empty_columns] .= short_p_vector
+        long_KLD[non_empty_columns] .= KLD
         # round p-value to 4 digits
         group[:, :p] .= round.(long_p_vector, digits=4)
+        group[:, :KLD] .= round.(long_KLD, digits=3)
     end
 
-    CSV.write(output_file, data[:, vcat(input_index, [:p])])
+    CSV.write(output_file, data[:, vcat(input_index, [:KLD, :p])])
 end
 
 # call from the command line: "julia KLD.jl ../temp/shipment-clean.csv ../temp/p-values.csv"
@@ -115,5 +120,5 @@ input_index =string_to_symbols(parsed_args["index"])
 by_index = string_to_symbols(parsed_args["by"])
 
 
-main(input_file, output_file, input_index, by_index)
+main(input_file, output_file, input_index, by_index, KLD_metric)
 
