@@ -46,6 +46,13 @@ function KLD_metric(data::Array{Int64,N}, params::DirichletMultinomial) where {N
     return compute_KLD(share, p)[1,:]
 end
 
+function sum_absolute_deviation(data::Array{Int64,N}, params::DirichletMultinomial) where {N}
+    share = data ./ sum(data, dims=1)
+    p = params.α / params.α0
+    return sum(abs.(share .- p), dims=1)[1,:]
+end
+
+
 function compute_p_values(A::Array{Int64,2}, f::Function; debug=false)
     # countries with positive shipments
     non_empty_columns = vec(sum(A, dims=1) .> 0)
@@ -120,5 +127,5 @@ input_index =string_to_symbols(parsed_args["index"])
 by_index = string_to_symbols(parsed_args["by"])
 
 
-main(input_file, output_file, input_index, by_index, KLD_metric)
+main(input_file, output_file, input_index, by_index, sum_absolute_deviation)
 
