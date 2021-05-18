@@ -99,7 +99,7 @@ function main(input_file::String, output_file::String, input_index::Array{Symbol
         :p => ones(Float64, size(data, 1)))
     grouped_rows = groupby(data, by_index)
 
-    Threads.@threads for group in collect(SubDataFrame, grouped_rows)[1:2]
+    Threads.@threads for group in collect(SubDataFrame, grouped_rows)
         index_value = group[1, by_index]
         println(index_value)
 
