@@ -106,8 +106,7 @@ function flip(A::Array) :: Array
     return Array(A')
 end
 
-function main(input_file::String, output_file::String, input_index::Array{Symbol,1}, by_index::Union{Array{Symbol,1}, Nothing}, f::Function)
-    data = DataFrame(CSV.File(input_file))
+function main(data::DataFrame, input_index::Array{Symbol,1}, by_index::Union{Array{Symbol,1}, Nothing}, f::Function)
     hcols = length(input_index)
     # pre-allocate memory
     insertcols!(data, hcols+1, 
@@ -135,10 +134,9 @@ function main(input_file::String, output_file::String, input_index::Array{Symbol
         long_KLD[non_empty_columns] .= KLD
         # round p-value to 4 digits
         group[:, :p] .= round.(long_p_vector, digits=4)
-        group[:, :KLD] .= round.(long_KLD, digits=3)
+        group[:, :statistic] .= round.(long_KLD, digits=3)
     end
-
-    CSV.write(output_file, data[:, vcat(input_index, [:KLD, :p])])
+    return data[:, vcat(input_index, [:statistic, :p])]
 end
 
 
@@ -152,7 +150,8 @@ statistics = Dict(
 parsed_args = parse_commandline()
 input_file = parsed_args["input_file"]
 output_file = parsed_args["output_file"]
-statistic = statistics[parsed_args["statistic"]]
+stat_name = parsed_args["statistic"]
+stat_function = statistics[stat_name]
 input_index =string_to_symbols(parsed_args["index"])
 if (parsed_args["by"]=="")
     by_index = nothing
@@ -160,5 +159,8 @@ else
     by_index = string_to_symbols(parsed_args["by"])
 end
 
-main(input_file, output_file, input_index, by_index, statistic)
+data = DataFrame(CSV.File(input_file))
+output = main(data, input_index, by_index, stat_function)
+rename!(output, Dict("statistic" => stat_name))
+CSV.write(output_file, output)
 
