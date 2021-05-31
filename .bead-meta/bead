@@ -33,8 +33,8 @@
             "kind": "950c0d9e7cd2e3e4f84635996614d235-b6985d2c-b527-48ca-a549-e3e425bd6254"
         },
         "spanish-trade-count": {
-            "content_id": "09d8a3f4377e93683079162a2a6f87f737edcb8cd28dc8ce075171f6cdb64472cb030db10248bc0b56fb38d8cf665e46d9b020a8f3c3f839465b45b5dd9d75fc",
-            "freeze_time": "20210503T170209215487+0200",
+            "content_id": "0da2fabfbde8cf9e3935f2cfcff29e06e0f723597d394339baf6ffc790b591d76ac296865fe30746a8988cbe3d36c22293dc2c40597fcbdea950df2776d7f883",
+            "freeze_time": "20210531T135433111267+0200",
             "kind": "0c769b57faca40b3a5ff62a8edad1f0a-b6b58b5a-88d3-4dc9-9350-b0d344cb456b"
         },
         "trade-bins": {
@@ -43,8 +43,8 @@
             "kind": "141041b23f034b118eb13feecc6f1f92-488fcbc2-691c-4d7a-b7e2-2b90fafa03fd"
         },
         "trade_data_aggregated": {
-            "content_id": "90ce6fe633decf62f8e06a7c826a7b95011a95ddab8d8c41e2e1973610d357a86e97214fa2f0de2e8c1dd0b0077d9dc3b6122936aeb7ada2dd72480ca27449b9",
-            "freeze_time": "20201029T144310263485+0100",
+            "content_id": "338b3aa651a75a1d264d174188ff4d88a8df4f16fc0621426df9557ae8ceba1d3d8f2f10c1cec5b04d3f99d3a51c9de25a457a15ceac616e5b62c197d0ca2c9d",
+            "freeze_time": "20200810T024402722594+0200",
             "kind": "e75315b28191856b2896c5c207583b30-4da373db-09a1-4003-94e1-9596663c16b5"
         },
         "trade_data_chapter": {

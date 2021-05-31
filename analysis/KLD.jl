@@ -19,7 +19,8 @@ function parse_commandline()
             required = true
         "--by"
             help = "Column names to index each output row, separated by comma"
-            required = true
+            required = false
+            default = ""
         "input_file"
             help = "Input file to read"
             required = true
@@ -90,18 +91,24 @@ function flip(A::Array) :: Array
     return Array(A')
 end
 
-function main(input_file::String, output_file::String, input_index::Array{Symbol,1}, by_index::Array{Symbol,1}, f::Function)
+function main(input_file::String, output_file::String, input_index::Array{Symbol,1}, by_index::Union{Array{Symbol,1}, Nothing}, f::Function)
     data = DataFrame(CSV.File(input_file))
     hcols = length(input_index)
     # pre-allocate memory
     insertcols!(data, hcols+1, 
         :KLD => zeros(Float64, size(data, 1)),
         :p => ones(Float64, size(data, 1)))
-    grouped_rows = groupby(data, by_index)
+    if by_index == nothing
+        grouped_rows = [data]
+    else
+        grouped_rows = collect(SubDataFrame, groupby(data, by_index))
+    end
 
-    Threads.@threads for group in collect(SubDataFrame, grouped_rows)
-        index_value = group[1, by_index]
-        println(index_value)
+    Threads.@threads for group in grouped_rows
+        if by_index != nothing
+            index_value = group[1, by_index]
+            println(index_value)
+        end
 
         # Column hcols+1 is :p, everything to the right is data
         subset = Array{Int64}(group[:, hcols+2:end])
@@ -124,8 +131,11 @@ parsed_args = parse_commandline()
 input_file = parsed_args["input_file"]
 output_file = parsed_args["output_file"]
 input_index =string_to_symbols(parsed_args["index"])
-by_index = string_to_symbols(parsed_args["by"])
-
+if (parsed_args["by"]=="")
+    by_index = nothing
+else
+    by_index = string_to_symbols(parsed_args["by"])
+end
 
 main(input_file, output_file, input_index, by_index, sum_absolute_deviation)
 
