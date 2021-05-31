@@ -160,6 +160,7 @@ else
 end
 
 data = DataFrame(CSV.File(input_file))
+Random.seed!(4399)
 output = main(data, input_index, by_index, stat_function)
 rename!(output, Dict("statistic" => stat_name))
 CSV.write(output_file, output)
