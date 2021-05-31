@@ -4,9 +4,10 @@ all: output/results_append.tex
 
 investment: $(foreach f,$(INVPROJECTS),output/investment/$(notdir $f))
 test: output/test.csv
+spain: output/spain-KLD.csv output/spain-SAD.csv output/spain-SSD.csv output/spain-MLQ.csv
 
-output/trade/polya-index.csv: input/spanish-trade-count/aggregated_product.csv analysis/KLD.jl
-	cd analysis/ && $(JULIA) KLD.jl --index region_o --statistic SAD ../$< ../$@
+output/spain-%.csv: input/spanish-trade-count/aggregated_product.csv analysis/KLD.jl
+	cd analysis/ && $(JULIA) KLD.jl --index region_o --statistic $* ../$< ../$@
 output/test.csv: analysis/test.csv analysis/KLD.jl
 	cd analysis/ && julia --project=. KLD.jl --index origin,destination --by destination ../$< ../$@
 output/investment/%.csv: data/investment/%.csv analysis/KLD.jl
