@@ -21,6 +21,9 @@ function parse_commandline()
             help = "Column names to index each output row, separated by comma"
             required = false
             default = ""
+        "--statistic"
+            help = "Statistic to compute, one of KLD, SAD, SSD, MLQ"
+            required = true
         "input_file"
             help = "Input file to read"
             required = true
@@ -51,6 +54,18 @@ function sum_absolute_deviation(data::Array{Int64,N}, params::DirichletMultinomi
     share = data ./ sum(data, dims=1)
     p = params.α / params.α0
     return sum(abs.(share .- p), dims=1)[1,:]
+end
+
+function sum_squared_deviation(data::Array{Int64,N}, params::DirichletMultinomial) where {N}
+    share = data ./ sum(data, dims=1)
+    p = params.α / params.α0
+    return sum((share .- p) .^ 2, dims=1)[1,:]
+end
+
+function maximum_location_quotient(data::Array{Int64,N}, params::DirichletMultinomial) where {N}
+    share = data ./ sum(data, dims=1)
+    p = params.α / params.α0
+    return maximum((share ./ p), dims=1)[1,:]
 end
 
 
@@ -126,10 +141,18 @@ function main(input_file::String, output_file::String, input_index::Array{Symbol
     CSV.write(output_file, data[:, vcat(input_index, [:KLD, :p])])
 end
 
-# call from the command line: "julia KLD.jl ../temp/shipment-clean.csv ../temp/p-values.csv"
+
+statistics = Dict(
+    "KLD" => KLD_metric,
+    "SAD" => sum_absolute_deviation,
+    "SSD" => sum_squared_deviation,
+    "MLQ" => maximum_location_quotient
+)
+
 parsed_args = parse_commandline()
 input_file = parsed_args["input_file"]
 output_file = parsed_args["output_file"]
+statistic = statistics[parsed_args["statistic"]]
 input_index =string_to_symbols(parsed_args["index"])
 if (parsed_args["by"]=="")
     by_index = nothing
@@ -137,5 +160,5 @@ else
     by_index = string_to_symbols(parsed_args["by"])
 end
 
-main(input_file, output_file, input_index, by_index, sum_absolute_deviation)
+main(input_file, output_file, input_index, by_index, statistic)
 
