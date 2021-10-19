@@ -11,5 +11,9 @@ Approximate this welfare loss as a function of difference of import shares (impo
 ## Measurement
 Give the reduced-form formula derived above, compute index of dissimilarity for each country pair. Simulate empirical distribution to account for sparsity...
 
+Correlate with economic diplomacy as a validation exercise, not the main focus of the paper.
+
+As a benchmark, we can compute the same statistic for regions within Span, as opposed to MSs within EU.
+
 ## Data needs
 PRODCOM data to be able to compute domestic absorption.
